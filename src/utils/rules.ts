@@ -1,8 +1,10 @@
-import { RegisterOptions, UseFormGetValues } from 'react-hook-form'
 
-type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions }
+import { UseFormGetValues } from 'react-hook-form'
 
-export const getRules = (getValues?: UseFormGetValues<any>): Rules => ({
+//type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions | undefined }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getRules = (getValues?: UseFormGetValues<any>)/*: Rules*/ => ({
   email: {
     required: {
       value: true,
@@ -50,7 +52,7 @@ export const getRules = (getValues?: UseFormGetValues<any>): Rules => ({
     },
     validate:
       typeof getValues === 'function'
-        ? (value) => (value === getValues('password') ? true : 'Confirm password does not match')
+        ? (value ?:string) => (value === getValues('password') ? true : 'Confirm password does not match')
         : undefined
   }
 })
