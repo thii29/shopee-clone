@@ -2,19 +2,25 @@ import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { getRules } from 'src/utils/rules'
+import { schema, Schema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-interface FormData {
-  email: string
-  password: string
-  confirm_password: string
-}
+// interface FormData {
+//   email: string
+//   password: string
+//   confirm_password: string
+// }
+type FormData = Schema
+
 export default function Register() {
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors }
-  } = useForm<FormData>()
+  } = useForm<FormData>({
+    resolver: yupResolver(schema)
+  })
   const rules = getRules(getValues)
   const onSubmit = handleSubmit((data) => {
     console.log(data)
@@ -35,7 +41,7 @@ export default function Register() {
                 className='mt-8'
                 errorMessage={errors.email?.message}
                 placeHolder='Email'
-                rules={rules.email}
+                //rules={rules.email}
               />
               {/* <div className='mt-8'>
                 <input
@@ -55,7 +61,7 @@ export default function Register() {
                 className='mt-2'
                 errorMessage={errors.password?.message}
                 placeHolder='Password'
-                rules={rules.password}
+                //rules={rules.password}
                 autoComplete='on'
               />
               <Input
@@ -65,7 +71,7 @@ export default function Register() {
                 className='mt-2'
                 errorMessage={errors.confirm_password?.message}
                 placeHolder='Confirm Password'
-                rules={rules.confirm_password}
+                //rules={rules.confirm_password}
                 autoComplete='on'
               />
               <div className='mt-2'>
