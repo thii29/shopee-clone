@@ -1,17 +1,15 @@
 //import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { loginSchema, LoginSchema} from 'src/utils/rules'
-import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { loginAccount } from "src/api/auth.api";
-import { ResponseApi } from "src/types/utils.type";
-import { isAxiosUnprocessableEntityError } from "src/utils/utils";
-import Input from "src/components/Input";
-
+import { loginSchema, LoginSchema } from 'src/utils/rules'
+import { useForm } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
+import { loginAccount } from 'src/api/auth.api'
+import { ResponseApi } from 'src/types/utils.type'
+import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
+import Input from 'src/components/Input'
 
 type FormData = LoginSchema
-
 
 export default function Login() {
   const {
@@ -47,13 +45,13 @@ export default function Login() {
       }
     })
   })
-  
+
   return (
     <div className='bg-orange'>
       <div className='container'>
         <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate >
+            <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng nhập</div>
               <Input
                 name='email'
@@ -64,7 +62,7 @@ export default function Login() {
                 placeHolder='Email'
                 //rules={rules.email}
               />
-             <Input
+              <Input
                 name='password'
                 register={register}
                 type='password'
@@ -74,15 +72,19 @@ export default function Login() {
                 //rules={rules.password}
                 autoComplete='on'
               />
-              <div className="mt-3">
-                <button type="submit" className="w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600">
+              <div className='mt-3'>
+                <button
+                  type='submit'
+                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600'
+                >
                   Đăng nhập
                 </button>
               </div>
-              <div className="mt-8 flex items-center justify-center">
-                <span className='text-gray-400'>
-                  Bạn chưa có tài khoản? 
-                </span> <Link to="/register" className="ml-1 text-red-400">Đăng ký</Link>
+              <div className='mt-8 flex items-center justify-center'>
+                <span className='text-gray-400'>Bạn chưa có tài khoản?</span>{' '}
+                <Link to='/register' className='ml-1 text-red-400'>
+                  Đăng ký
+                </Link>
               </div>
             </form>
           </div>
