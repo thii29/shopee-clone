@@ -17,7 +17,7 @@ export default function Popover({
   as: Element = 'div',
   initialOpen,
   placement = 'bottom-end'
-}): Props {
+}: Props) {
   const [open, setOpen] = useState(initialOpen || false)
   const arrowRef = useRef<HTMLElement>(null)
   const { x, y, reference, floating, strategy, middlewareData } = useFloating({
@@ -32,7 +32,7 @@ export default function Popover({
     setOpen(false)
   }
   return (
-    <div className={className} ref={reference} onMouseEnter={showPopover} onMouseLeave={hidePopover}>
+    <Element className={className} ref={reference} onMouseEnter={showPopover} onMouseLeave={hidePopover}>
       {children}
       <FloatingPortal id={id}>
         <AnimatePresence>
@@ -64,6 +64,6 @@ export default function Popover({
           )}
         </AnimatePresence>
       </FloatingPortal>
-    </div>
+    </Element>
   )
 }

@@ -6,37 +6,53 @@ export default function Header() {
     <div className='pb-5 pt-2 bg-gradient-to-t from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
         <div className='flex justify-end'>
-          <Popover>
-            <span className='mx-1'>Vietnamese</span>
+          <Popover
+            className='flex items-center py-1 hover:text-gray-300 cursor-pointer'
+            renderPopover={
+              <div className='bg-white relative shadow-md rounded-sm border border-gray-200'>
+                <div className='flex flex-col py-2 px-3'>
+                  <button className='py-2 px-3 hover:text-orange'>Vietnamese</button>
+                  <button className='py-2 px-3 hover:text-orange'>English</button>
+                </div>
+              </div>
+            }
+          >
+            <div className='flex items-center py-1 hover:text-gray-300 cursor-pointer'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418'
+                />
+              </svg>
+              <div className='mx-1'>English</div>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-4'
+              >
+                <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
+              </svg>
+            </div>
           </Popover>
-          <div className='flex items-center py-1 hover:text-gray-300 cursor-pointer'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='size-5'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418'
-              />
-            </svg>
-            <div className='mx-1'>English</div>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='size-4'
-            >
-              <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
-            </svg>
-          </div>
-          <div className='flex items-center py-1 hover:text-gray-300 cursor-pointer ml-4'>
+          <Popover className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
+          renderPopover={
+            <div className='bg-white shadow-md rounded-sm border border-gray-200'>
+              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>My account</Link>
+              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>My purchase</Link>
+              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>Log out</Link>
+            </div>
+          }>
             <div className='w-5 h-5 flex-shrink-0'>
               <img
                 src='https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/386357827_122121435266036231_1463382430782505098_n.jpg?stp=dst-jpg_s120x120&_nc_cat=105&ccb=1-7&_nc_sid=e8ff23&_nc_eui2=AeEoX_6NwCjRkqZwWjy9A-oKDozDN2As0LgOjMM3YCzQuFM6ItwqEZgMqYEv47NNyvaHGBomP6Blz5eqom_AqgIo&_nc_ohc=1PWpggFP3akQ7kNvgEM9ftN&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AKKCFwuOD02qO1WMnhUGizS&oh=00_AYDiHLz7PQR1Jc62Y2jhoXH-JXOKDegRDGzQR0n50G0tnA&oe=67016EAD'
@@ -45,7 +61,7 @@ export default function Header() {
               />
             </div>
             <div className='ml-2'>Thi Pham</div>
-          </div>
+          </Popover>
         </div>
         <div className='grid grid-cols-12 gap-4 mt-4 items-end'>
           <Link to='/' className='col-span-2'>
