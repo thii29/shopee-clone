@@ -78,4 +78,19 @@ export const schema = yup.object({
 
 })
 
+export const loginSchema = yup.object({
+  email: yup
+    .string()
+    .required('This field is required')
+    .email('Incorrect email format')
+    .min(5, 'Length of email from 5 - 160 characters')
+    .max(160, 'Length of email from 5 - 160 characters'),
+  password: yup
+    .string()
+    .required('This field is required')
+    .min(6, 'Length of password from 6 - 160 characters')
+    .max(6, 'Length of password from 6 - 160 characters'),
+})
+
 export type Schema = yup.InferType<typeof schema>
+export type LoginSchema = yup.InferType<typeof loginSchema>
