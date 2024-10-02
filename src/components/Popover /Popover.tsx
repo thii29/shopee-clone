@@ -7,7 +7,7 @@ interface Props {
   renderPopover: React.ReactNode
   className?: string
   as?: ElementType
-  initialOpen?: boolean
+  //initialOpen?: boolean
   placement?: Placement
 }
 export default function Popover({
@@ -15,10 +15,10 @@ export default function Popover({
   className,
   renderPopover,
   as: Element = 'div',
-  initialOpen,
+  //initialOpen,
   placement = 'bottom-end'
 }: Props) {
-  const [open, setOpen] = useState(initialOpen || false)
+  const [open, setOpen] = useState(false)
   const arrowRef = useRef<HTMLElement>(null)
   const { x, y, reference, floating, strategy, middlewareData } = useFloating({
     middleware: [offset(6), shift(), arrow({ element: arrowRef })],

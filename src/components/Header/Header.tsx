@@ -108,7 +108,6 @@ export default function Header() {
           </form>
           <div className='col-span-1 justify-self-start'>
             <Popover
-              initialOpen
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[448px] text-md px-3 py-2'>
                   <div className='text-gray-400 capitalize'>Recently Added Products</div>

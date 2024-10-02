@@ -5,7 +5,7 @@ import { loginSchema, LoginSchema } from 'src/utils/rules'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { loginAccount } from 'src/api/auth.api'
-import { ResponseApi } from 'src/types/utils.type'
+import {ErrorResponse } from 'src/types/utils.type'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import Input from 'src/components/Input'
 
@@ -31,7 +31,7 @@ export default function Login() {
         console.log(data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<FormData>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {

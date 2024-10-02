@@ -62,9 +62,7 @@ export default function useRouteElements() {
           <ProductList />
         </MainLayout>
       )
-    },
-    
-    
+    }
   ])
   return routeElements
 }
