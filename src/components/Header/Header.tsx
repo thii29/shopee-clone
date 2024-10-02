@@ -45,14 +45,22 @@ export default function Header() {
               </svg>
             </div>
           </Popover>
-          <Popover className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
-          renderPopover={
-            <div className='bg-white shadow-md rounded-sm border border-gray-200'>
-              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>My account</Link>
-              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>My purchase</Link>
-              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>Log out</Link>
-            </div>
-          }>
+          <Popover
+            className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
+            renderPopover={
+              <div className='bg-white shadow-md rounded-sm border border-gray-200'>
+                <Link to='/profile' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                  My account
+                </Link>
+                <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                  My purchase
+                </Link>
+                <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                  Log out
+                </Link>
+              </div>
+            }
+          >
             <div className='w-5 h-5 flex-shrink-0'>
               <img
                 src='https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/386357827_122121435266036231_1463382430782505098_n.jpg?stp=dst-jpg_s120x120&_nc_cat=105&ccb=1-7&_nc_sid=e8ff23&_nc_eui2=AeEoX_6NwCjRkqZwWjy9A-oKDozDN2As0LgOjMM3YCzQuFM6ItwqEZgMqYEv47NNyvaHGBomP6Blz5eqom_AqgIo&_nc_ohc=1PWpggFP3akQ7kNvgEM9ftN&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AKKCFwuOD02qO1WMnhUGizS&oh=00_AYDiHLz7PQR1Jc62Y2jhoXH-JXOKDegRDGzQR0n50G0tnA&oe=67016EAD'
@@ -77,7 +85,7 @@ export default function Header() {
                 type='text'
                 name='search'
                 id=''
-                placeholder='Free ship '
+                placeholder='Search in Shopee '
                 className='text-black px-3 py-2 flex-grow border-none outline-none bg-transparent'
               />
               <button className='rounded-sm py-2 px-6 flex-shrink-0 bg-orange hover:opacity-90'>
@@ -98,23 +106,98 @@ export default function Header() {
               </button>
             </div>
           </form>
-          <div className='cols-span-1'>
-            <Link to='/'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='size-8'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
-                />
-              </svg>
-            </Link>
+          <div className='col-span-1 justify-self-start'>
+            <Popover
+              initialOpen
+              renderPopover={
+                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[448px] text-md px-3 py-2'>
+                  <div className='text-gray-400 capitalize'>Recently Added Products</div>
+                  <div className='mt-5'>
+                    <div className='mt-4 flex'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
+                          alt='img'
+                          className='w-11 h-11 object-cover'
+                        />
+                      </div>
+                      <div className='flex-grow ml-2 overflow-hidden'>
+                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <span className='text-orange'>đ12.900</span>
+                      </div>
+                    </div>
+                    <div className='mt-4 flex'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
+                          alt='img'
+                          className='w-11 h-11 object-cover'
+                        />
+                      </div>
+                      <div className='flex-grow ml-2 overflow-hidden'>
+                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <span className='text-orange'>đ12.900</span>
+                      </div>
+                    </div>
+                    <div className='mt-4 flex'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
+                          alt='img'
+                          className='w-11 h-11 object-cover'
+                        />
+                      </div>
+                      <div className='flex-grow ml-2 overflow-hidden'>
+                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <span className='text-orange'>đ12.900</span>
+                      </div>
+                    </div>
+                    <div className='mt-4 flex'>
+                      <div className='flex-shrink-0'>
+                        <img
+                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
+                          alt='img'
+                          className='w-11 h-11 object-cover'
+                        />
+                      </div>
+                      <div className='flex-grow ml-2 overflow-hidden'>
+                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
+                      </div>
+                      <div className='ml-2 flex-shrink-0'>
+                        <span className='text-orange'>đ12.900</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex mt-6 items-center justify-between">
+                    <div className="capitalize text-xs text-gray-500">3 more products in cart</div>
+                    <button className="capitalize bg-orange hover:bg-opacity-90 px-4 py-2 rounded-sm text-white">View my shopping cart</button>
+                  </div>
+                </div>
+              }
+            >
+              <Link to='/'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className='size-8'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
+                  />
+                </svg>
+              </Link>
+            </Popover>
           </div>
         </div>
       </div>
