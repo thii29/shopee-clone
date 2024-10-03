@@ -2,13 +2,13 @@ import axios, { type AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
 import HttpStatusCode from 'src/constants/httpStatusCode.enum'
 import { AuthResponse } from 'src/types/auth.type'
-import { clearAccessTokenFromLS, saveAccessTokenToLS } from './auth'
-import { error } from 'console'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS } from './auth'
 
 class Htttp {
   instance: AxiosInstance
   private accessToken: string
   constructor() {
+    this.accessToken = getAccessTokenFromLS()
     this.instance = axios.create({
       baseURL: 'https://api-ecom.duthanhduoc.com/',
       timeout: 10000,

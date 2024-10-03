@@ -1,5 +1,5 @@
 //import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema, LoginSchema } from 'src/utils/rules'
 import { useForm } from 'react-hook-form'
@@ -8,10 +8,14 @@ import { loginAccount } from 'src/api/auth.api'
 import {ErrorResponse } from 'src/types/utils.type'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import Input from 'src/components/Input'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
 
 type FormData = LoginSchema
 
 export default function Login() {
+  const {setIsAuthenticated} = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     setError,
@@ -27,8 +31,9 @@ export default function Login() {
 
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        console.log(data)
+      onSuccess: () => {
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {

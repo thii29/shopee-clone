@@ -1,7 +1,21 @@
 import { Link } from 'react-router-dom'
 import Popover from '../Popover '
+import { useMutation } from '@tanstack/react-query'
+import { logout } from 'src/api/auth.api'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
 
 export default function Header() {
+  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+    }
+  })
+  const handleLogout = () => {
+    logoutMutation.mutate()
+  }
   return (
     <div className='pb-5 pt-2 bg-gradient-to-t from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
@@ -45,31 +59,47 @@ export default function Header() {
               </svg>
             </div>
           </Popover>
-          <Popover
-            className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
-            renderPopover={
-              <div className='bg-white shadow-md rounded-sm border border-gray-200'>
-                <Link to='/profile' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
-                  My account
-                </Link>
-                <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
-                  My purchase
-                </Link>
-                <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
-                  Log out
-                </Link>
+          {isAuthenticated && (
+            <Popover
+              className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
+              renderPopover={
+                <div className='bg-white shadow-md rounded-sm border border-gray-200'>
+                  <Link to='/profile' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                    My account
+                  </Link>
+                  <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                    My purchase
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'
+                  >
+                    Logout
+                  </button>
+                </div>
+              }
+            >
+              <div className='w-5 h-5 flex-shrink-0'>
+                <img
+                  src='https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/386357827_122121435266036231_1463382430782505098_n.jpg?stp=dst-jpg_s120x120&_nc_cat=105&ccb=1-7&_nc_sid=e8ff23&_nc_eui2=AeEoX_6NwCjRkqZwWjy9A-oKDozDN2As0LgOjMM3YCzQuFM6ItwqEZgMqYEv47NNyvaHGBomP6Blz5eqom_AqgIo&_nc_ohc=1PWpggFP3akQ7kNvgEM9ftN&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AKKCFwuOD02qO1WMnhUGizS&oh=00_AYDiHLz7PQR1Jc62Y2jhoXH-JXOKDegRDGzQR0n50G0tnA&oe=67016EAD'
+                  alt='avatar'
+                  className=' w-ful h-full object-cover rounded-full'
+                />
               </div>
-            }
-          >
-            <div className='w-5 h-5 flex-shrink-0'>
-              <img
-                src='https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/386357827_122121435266036231_1463382430782505098_n.jpg?stp=dst-jpg_s120x120&_nc_cat=105&ccb=1-7&_nc_sid=e8ff23&_nc_eui2=AeEoX_6NwCjRkqZwWjy9A-oKDozDN2As0LgOjMM3YCzQuFM6ItwqEZgMqYEv47NNyvaHGBomP6Blz5eqom_AqgIo&_nc_ohc=1PWpggFP3akQ7kNvgEM9ftN&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AKKCFwuOD02qO1WMnhUGizS&oh=00_AYDiHLz7PQR1Jc62Y2jhoXH-JXOKDegRDGzQR0n50G0tnA&oe=67016EAD'
-                alt='avatar'
-                className=' w-ful h-full object-cover rounded-full'
-              />
+              <div className='ml-2'>Thi Pham</div>
+            </Popover>
+          )}
+          {!isAuthenticated && (
+            <div className='flex items-center'>
+              <Link to='/register' className='mx-3 capitalize hover:text-white/70'>
+                Register
+              </Link>
+              <div className='border-r-[1px] border-r-white/40 h-4'></div>
+              <Link to='/login' className='mx-3 capitalize hover:text-white/70'>
+                Login
+              </Link>
             </div>
-            <div className='ml-2'>Thi Pham</div>
-          </Popover>
+          )}
         </div>
         <div className='grid grid-cols-12 gap-4 mt-4 items-end'>
           <Link to='/' className='col-span-2'>
@@ -173,9 +203,11 @@ export default function Header() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex mt-6 items-center justify-between">
-                    <div className="capitalize text-xs text-gray-500">3 more products in cart</div>
-                    <button className="capitalize bg-orange hover:bg-opacity-90 px-4 py-2 rounded-sm text-white">View my shopping cart</button>
+                  <div className='flex mt-6 items-center justify-between'>
+                    <div className='capitalize text-xs text-gray-500'>3 more products in cart</div>
+                    <button className='capitalize bg-orange hover:bg-opacity-90 px-4 py-2 rounded-sm text-white'>
+                      View my shopping cart
+                    </button>
                   </div>
                 </div>
               }
@@ -202,4 +234,7 @@ export default function Header() {
       </div>
     </div>
   )
+}
+function setIsAuthenticated(arg0: boolean) {
+  throw new Error('Function not implemented.')
 }
