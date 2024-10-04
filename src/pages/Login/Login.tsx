@@ -10,11 +10,12 @@ import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import Input from 'src/components/Input'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
 
 type FormData = LoginSchema
 
 export default function Login() {
-  const {setIsAuthenticated} = useContext(AppContext)
+  const {setIsAuthenticated, setProfile} = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -33,6 +34,7 @@ export default function Login() {
     loginAccountMutation.mutate(data, {
       onSuccess: () => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {
@@ -78,17 +80,17 @@ export default function Login() {
                 autoComplete='on'
               />
               <div className='mt-3'>
-                <button
-                  type='submit'
-                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600'
+                <Button
+                  type='submit' isLoading={loginAccountMutation.isLoading} disabled={loginAccountMutation.isLoading}
+                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex justify-center items-center'
                 >
-                  Đăng nhập
-                </button>
+                  Login
+                </Button>
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Bạn chưa có tài khoản?</span>{' '}
                 <Link to='/register' className='ml-1 text-red-400'>
-                  Đăng ký
+                  Sign up
                 </Link>
               </div>
             </form>

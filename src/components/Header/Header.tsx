@@ -4,24 +4,26 @@ import { useMutation } from '@tanstack/react-query'
 import { logout } from 'src/api/auth.api'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
+import path from 'src/constants/path'
 
 export default function Header() {
-  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
-  const logoutMutation = useMutation({
+  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
+  const { mutate: requestLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       setIsAuthenticated(false)
+      setProfile(null)
     }
   })
   const handleLogout = () => {
-    logoutMutation.mutate()
+    requestLogout()
   }
   return (
     <div className='pb-5 pt-2 bg-gradient-to-t from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
         <div className='flex justify-end'>
           <Popover
-            className='flex items-center py-1 hover:text-gray-300 cursor-pointer'
+            className='flex items-center py-1 hover:text-white/70 cursor-pointer'
             renderPopover={
               <div className='bg-white relative shadow-md rounded-sm border border-gray-200'>
                 <div className='flex flex-col py-2 px-3'>
@@ -31,7 +33,7 @@ export default function Header() {
               </div>
             }
           >
-            <div className='flex items-center py-1 hover:text-gray-300 cursor-pointer'>
+            <div className='flex items-center py-1 hover:text-white/70 cursor-pointer'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -64,7 +66,7 @@ export default function Header() {
               className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
               renderPopover={
                 <div className='bg-white shadow-md rounded-sm border border-gray-200'>
-                  <Link to='/profile' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+                  <Link to={path.profile} className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
                     My account
                   </Link>
                   <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
@@ -86,16 +88,16 @@ export default function Header() {
                   className=' w-ful h-full object-cover rounded-full'
                 />
               </div>
-              <div className='ml-2'>Thi Pham</div>
+              <div className='ml-2'>{profile?.email}</div>
             </Popover>
           )}
           {!isAuthenticated && (
             <div className='flex items-center'>
-              <Link to='/register' className='mx-3 capitalize hover:text-white/70'>
+              <Link to={path.register} className='mx-3 capitalize hover:text-white/70'>
                 Register
               </Link>
               <div className='border-r-[1px] border-r-white/40 h-4'></div>
-              <Link to='/login' className='mx-3 capitalize hover:text-white/70'>
+              <Link to={path.login} className='mx-3 capitalize hover:text-white/70'>
                 Login
               </Link>
             </div>
@@ -235,6 +237,6 @@ export default function Header() {
     </div>
   )
 }
-function setIsAuthenticated(arg0: boolean) {
-  throw new Error('Function not implemented.')
-}
+// function setIsAuthenticated(arg0: boolean) {
+//   throw new Error('Function not implemented.')
+// }
