@@ -24,7 +24,7 @@ export default {
         paddingRight: theme('spacing.4'),
       }
     })
-   })
+   }),
   ],
 }
 
