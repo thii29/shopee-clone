@@ -4,9 +4,12 @@ import SiderBarFilter from "./SideBarFilter";
 import SortProductList from "./SortProductList";
 import useQueryParams from "src/hooks/useQueryParams";
 import productApi from "src/api/product.api";
+import Pagination from "src/components/Pagination";
+import { useState } from "react";
 
 export default function Produclist() {
   const queryParams = useQueryParams()
+  const [page, setPage] = useState(1)
   const {data} = useQuery({
     queryKey: ['products', queryParams],
     queryFn: () => {
@@ -29,6 +32,7 @@ export default function Produclist() {
               </div>
             )}
           </div>
+          <Pagination page= {page} setPage={setPage} pageSize={20}/>
         </div>
       </div>
     </div>
