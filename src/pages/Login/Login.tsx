@@ -21,7 +21,7 @@ export default function Login() {
     register,
     setError,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, }
   } = useForm<FormData>({
     resolver: yupResolver(loginSchema)
   })
@@ -32,9 +32,9 @@ export default function Login() {
 
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         setIsAuthenticated(true)
-        setProfile(data.data.data.user)
+        setProfile(response.data.data.user)
         navigate('/')
       },
       onError: (error) => {

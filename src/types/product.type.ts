@@ -18,8 +18,12 @@ export interface Product {
   updatedAt: string
 }
 
-export interface ProductList {
-  products: []
+export interface IProductList {
+  products: {
+    _id : string
+    name : string
+    price : number
+  }[];
   pagination: {
     page: number
     limit: number
@@ -36,5 +40,5 @@ export interface ProductListConfig {
   rating_filter?: number | string
   price_max?: number | string
   price_min?:number | string
-  name?: string 
+  name?: string
 }
