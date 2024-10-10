@@ -32,9 +32,9 @@ export default function Login() {
 
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         setIsAuthenticated(true)
-        setProfile(data.data.data.user)
+        setProfile(response.data.data.user)
         navigate('/')
       },
       onError: (error) => {
@@ -88,7 +88,7 @@ export default function Login() {
                 </Button>
               </div>
               <div className='mt-8 flex items-center justify-center'>
-                <span className='text-gray-400'>Bạn chưa có tài khoản?</span>{' '}
+                <span className='text-gray-400'>Bạn chưa có tài khoản?</span>
                 <Link to='/register' className='ml-1 text-red-400'>
                   Sign up
                 </Link>

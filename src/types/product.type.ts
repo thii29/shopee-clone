@@ -18,8 +18,8 @@ export interface Product {
   updatedAt: string
 }
 
-export interface ProductList {
-  products: []
+export interface IProductList {
+  products: Product[]
   pagination: {
     page: number
     limit: number
