@@ -33,6 +33,14 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
     })
   }
   const handlePriceOrder = (orderValue: Exclude<ProductListConfig['order'], undefined>) => {
+    console.log({
+      pathname: path.home,
+      search: createSearchParams({
+        ...queryConfig,
+        sort_by: sortBy.price,
+        order: orderValue
+      }).toString()
+    })
     navigate({
       pathname: path.home,
       search: createSearchParams({
@@ -41,6 +49,9 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
         order: orderValue
       }).toString()
     })
+    // const currentPage = 1;
+
+    // navigate(`/products?page=${currentPage}&limit=20&sortBy=view`)
   }
   return (
     <div className='bg-gray-300/40 py-4 px-3'>

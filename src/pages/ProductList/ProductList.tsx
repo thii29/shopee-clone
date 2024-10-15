@@ -14,6 +14,7 @@ export type QueryConfig = {
 
 export default function Produclist() {
   const queryParams: QueryConfig = useQueryParams()
+  console.log('queryParams', queryParams)
   const queryConfig: QueryConfig = omitBy(
     {
       page: queryParams.page || '1', // neu page ko co thi  mac dinh page = 1
@@ -25,20 +26,29 @@ export default function Produclist() {
       price_max: queryParams.price_max,
       price_min: queryParams.price_min,
       rating_filter: queryParams.rating_filter
-    },
+    }, // order=undefined&page=1&limit=10 => after omit => page=1&limit=10
     isUndefined
   )
   //const [page, setPage] = useState(1)
+  // USEQUERY => là thư viện giúp rút gọn khi call api thay vì
+  // Dùng useEffect như hồi trước phải khai báo setData, setLoading, setIsError,....
+  // CÓ CACHING dữ lại dữ liệu cũ theo queryKey,   Querykey mà thay đổi sẽ đc fetch lại
+  // những cái filter nằm trên url vd : ?page=1&limit.. đc gọi là query string
+
+  //Query param => bước 1 : navigate đẩy query string cần thiết lên url
+  // bước 2 lấy query string từ url bằng hàm gì đó...
+  // bước 3 lọc lại query string nếu có thằng truyền sai hoặc lỗi
+  // bước 4 truyền query config đã đc lọc vô hàm api products để fetch lại dữ liệu
   const { data } = useQuery<{ data: IProductList }>({
-    
+
     queryKey: ['products', queryConfig],
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
     },
     placeholderData: keepPreviousData
   })
-  //console.log(data?.data.data) check lỗi trắng trang  
-    
+  //console.log(data?.data.data) check lỗi trắng trang
+
   return (
     <div className='bg-gray-200 py-6'>
       <div className='container'>
