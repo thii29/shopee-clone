@@ -24,7 +24,7 @@ export default function Products({ product }: Props) {
             <div className='line-through max-w-[50%] text-gray-500 truncate'>{formatCurrency(product.price_before_discount)} vnd</div>
             <div className='text-orange truncate ml-1'>
               <span>{formatCurrency(product.price)}</span>
-              <span className='text-xs'> vnd</span>
+              <span className='text-sm'> vnd</span>
             </div>
           </div>
           <div className='mt-3 flex items-center justify-start'>

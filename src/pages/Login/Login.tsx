@@ -66,7 +66,7 @@ export default function Login() {
                 type='email'
                 className='mt-8'
                 errorMessage={errors.email?.message}
-                placeHolder='Email'
+                placeholder='Email'
                 //rules={rules.email}
               />
               <Input
@@ -75,13 +75,13 @@ export default function Login() {
                 type='password'
                 className='mt-2'
                 errorMessage={errors.password?.message}
-                placeHolder='Password'
+                placeholder='Password'
                 //rules={rules.password}
                 autoComplete='on'
               />
               <div className='mt-3'>
                 <Button
-                  type='submit' isLoading={loginAccountMutation.isLoading} disabled={loginAccountMutation.isLoading}
+                  type='submit' isLoading={loginAccountMutation.isPending} disabled={loginAccountMutation.isPending}
                   className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex justify-center items-center'
                 >
                   Login

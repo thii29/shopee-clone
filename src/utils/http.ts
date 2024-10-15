@@ -42,7 +42,7 @@ class Htttp {
           this.accessToken = ''
           clearLS()
         }
-        return response
+        return response.data
       },
       function (error) {
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
