@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { sortBy, order as orderConstant } from 'src/constants/product'
-import { QueryConfig } from '../ProductList'
 import { ProductListConfig } from 'src/types/product.type'
+import { QueryConfig } from '../ProductList'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { omit } from 'lodash'
@@ -13,11 +13,14 @@ interface Props {
 
 export default function SortProductList({ queryConfig, pageSize }: Props) {
   const page = Number(queryConfig.page)
-  const { sort_by = sortBy.sold, order } = queryConfig
+  const { sort_by = sortBy.createdAt, order } = queryConfig
   const navigate = useNavigate()
   const isActiveSortBy = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
+    //console.log(sortByValue)
     return sort_by === sortByValue
   }
+  //console.log(sort_by)
+
   const handleSort = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
     navigate({
       pathname: path.home,
@@ -42,13 +45,14 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
       }).toString()
     })
   }
+
   return (
     <div className='bg-gray-300/40 py-4 px-3'>
       <div className='flex flex-wrap items-center justify-between gap-2'>
         <div className='flex items-center flex-wrap gap-2'>
           <div>Sắp xếp theo:</div>
           <button
-            className={classNames('h-8 px-4 capitalize bg-orange text-black text-sm hover:bg-orange/80 text-center', {
+            className={classNames('h-8 px-4 text-sm hover:bg-orange/80 text-center', {
               'bg-orange text-white hover:bg-orange/80': isActiveSortBy(sortBy.view),
               'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.view)
             })}
@@ -79,7 +83,7 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
             id=''
             defaultValue=''
             className={classNames('h-8 px-4 capitalize text-sm text-center', {
-              ' text-white': isActiveSortBy(sortBy.price),
+              ' text-white bg-orange/80' : isActiveSortBy(sortBy.price),
               ' text-black hover:bg-slate-100': !isActiveSortBy(sortBy.price)
             })}
             value={order || ''}

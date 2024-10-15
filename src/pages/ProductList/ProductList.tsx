@@ -18,7 +18,7 @@ export default function Produclist() {
     {
       page: queryParams.page || '1', // neu page ko co thi  mac dinh page = 1
       limit: queryParams.limit || 20,
-      sortBy: queryParams.sort_by,
+      sort_by: queryParams.sort_by,
       exclude: queryParams.exclude,
       name: queryParams.name,
       order: queryParams.order,
@@ -30,7 +30,7 @@ export default function Produclist() {
   )
   //const [page, setPage] = useState(1)
   const { data } = useQuery<{ data: IProductList }>({
-    
+    //cho nay de call api cho list
     queryKey: ['products', queryConfig],
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
