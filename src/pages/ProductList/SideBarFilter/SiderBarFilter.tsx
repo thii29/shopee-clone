@@ -1,12 +1,25 @@
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link } from 'react-router-dom'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import path from 'src/constants/path'
+import { QueryConfig } from '../ProductList'
+import { Category } from 'src/types/category.type'
+import classNames from 'classnames'
 
-export default function SiderBarFilter() {
+interface Props {
+  queryConfig: QueryConfig
+  categories: Category[]
+}
+
+export default function SiderBarFilter({ queryConfig, categories }: Props) {
+  const { category } = queryConfig
+  //console.log(category?.length)
   return (
     <div className='py-4'>
-      <Link to={path.home} className='flex items-center font-semibold'>
+      {/* khi ko co danh muc nao thi active all categories */}
+      <Link to={path.home} className={classNames('flex items-center font-semibold',{
+        'text-orange': !category
+      })}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
@@ -25,43 +38,43 @@ export default function SiderBarFilter() {
       </Link>
       <div className='bg-gray-300 h-[1px] my-4'></div>
       <ul>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative px-2 text-orange font-semibold'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 20 20'
-              fill='currentColor'
-              className='size-4 absolute fill-orange top-1 left-[-10px]'
-            >
-              <path
-                fillRule='evenodd'
-                d='M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z'
-                clipRule='evenodd'
-              />
-            </svg>
-            Thời trang nam
-          </Link>
-        </li>
-        <li className='py-1 pl-2'>
-          <Link to={path.home} className='relative px-2  '>
-            Áo khoác
-          </Link>
-        </li>
-        <li className='py-1 pl-2'>
-          <Link to={path.home} className='relative px-2  '>
-            Áo vest và blazer
-          </Link>
-        </li>
-        <li className='py-1 pl-2'>
-          <Link to={path.home} className='relative px-2  '>
-            Quần jeans
-          </Link>
-        </li>
-        <li className='py-1 pl-2'>
-          <Link to={path.home} className='relative px-2  '>
-            Quần dài
-          </Link>
-        </li>
+        {/* loading de check xem trong mang co gi ko */}
+        {categories.length === 0 ? (<div>Loading...</div>):
+        (categories.map((categoryItem) => {
+          const isActive = category === categoryItem._id
+          return (
+            <li className='py-2 pl-2' key={categoryItem._id}>
+              <Link
+                to={{
+                  pathname: path.home,
+                  search: createSearchParams({
+                    ...queryConfig,
+                    category: categoryItem._id
+                  }).toString()
+                }}
+                className={classNames('relative px-2', {
+                  'font-semibold text-orange': isActive
+                })}
+              >
+                {isActive && (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                    className='size-4 absolute fill-orange top-1 left-[-10px]'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                )}
+                {categoryItem.name}
+              </Link>
+            </li>
+          )
+        }))}
       </ul>
 
       {/* /*Filter*/}
