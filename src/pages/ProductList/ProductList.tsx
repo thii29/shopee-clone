@@ -56,7 +56,7 @@ export default function Produclist() {
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
             <div className='col-span-2'>
-              <SiderBarFilter queryConfig={queryConfig} categories={categoriesData?.data.data || []}/>
+              <SiderBarFilter queryConfig={queryConfig} categories={categoriesData?.data || []}/>
             </div>
             <div className='col-span-9'>
               <SortProductList queryConfig={queryConfig} pageSize={productsData.data.pagination.page_size || 0}/>

@@ -1,25 +1,64 @@
-import { createSearchParams, Link } from 'react-router-dom'
+import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
-import Input from 'src/components/Input'
 import path from 'src/constants/path'
 import { QueryConfig } from '../ProductList'
 import { Category } from 'src/types/category.type'
 import classNames from 'classnames'
+import InputNumber from 'src/components/InputNumber'
+import { useForm, Controller } from 'react-hook-form'
+import { priceSchema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface Props {
   queryConfig: QueryConfig
   categories: Category[]
 }
 
+type FormData = {
+  price_min: string
+  price_max: string
+}
+
 export default function SiderBarFilter({ queryConfig, categories }: Props) {
   const { category } = queryConfig
   //console.log(category?.length)
+  const {
+    control,
+    handleSubmit,
+    watch,
+    trigger,
+    formState: { errors }
+  } = useForm<FormData>({
+    defaultValues: {
+      price_max: '',
+      price_min: ''
+    },
+    resolver: yupResolver(priceSchema),
+    shouldFocusError: false
+  })
+  const navigate = useNavigate()
+  const valueForm = watch()
+  console.log(valueForm)
+  console.log(errors)
+  const onSubmit = handleSubmit((data)=>{
+    navigate({
+      pathname:path.home,
+      search: createSearchParams({
+        ...queryConfig,
+        price_max: data.price_max,
+        price_min: data.price_min
+      }).toString()
+    })
+  })
   return (
     <div className='py-4'>
       {/* khi ko co danh muc nao thi active all categories */}
-      <Link to={path.home} className={classNames('flex items-center font-semibold',{
-        'text-orange': !category
-      })}>
+      <Link
+        to={path.home}
+        className={classNames('flex items-center font-semibold', {
+          'text-orange': !category
+        })}
+      >
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
@@ -34,47 +73,50 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
             d='M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5'
           />
         </svg>
-        All categories
+        Tất cả danh mục
       </Link>
       <div className='bg-gray-300 h-[1px] my-4'></div>
       <ul>
         {/* loading de check xem trong mang co gi ko */}
-        {categories.length === 0 ? (<div>Loading...</div>):
-        (categories.map((categoryItem) => {
-          const isActive = category === categoryItem._id
-          return (
-            <li className='py-2 pl-2' key={categoryItem._id}>
-              <Link
-                to={{
-                  pathname: path.home,
-                  search: createSearchParams({
-                    ...queryConfig,
-                    category: categoryItem._id
-                  }).toString()
-                }}
-                className={classNames('relative px-2', {
-                  'font-semibold text-orange': isActive
-                })}
-              >
-                {isActive && (
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className='size-4 absolute fill-orange top-1 left-[-10px]'
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                )}
-                {categoryItem.name}
-              </Link>
-            </li>
-          )
-        }))}
+        {categories.length === 0 ? (
+          <div>Loading...</div>
+        ) : (
+          categories.map((categoryItem) => {
+            const isActive = category === categoryItem._id
+            return (
+              <li className='py-2 pl-2' key={categoryItem._id}>
+                <Link
+                  to={{
+                    pathname: path.home,
+                    search: createSearchParams({
+                      ...queryConfig,
+                      category: categoryItem._id
+                    }).toString()
+                  }}
+                  className={classNames('relative px-2', {
+                    'font-semibold text-orange': isActive
+                  })}
+                >
+                  {isActive && (
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 20 20'
+                      fill='currentColor'
+                      className='size-4 absolute fill-orange top-1 left-[-10px]'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  )}
+                  {categoryItem.name}
+                </Link>
+              </li>
+            )
+          })
+        )}
       </ul>
 
       {/* /*Filter*/}
@@ -95,25 +137,56 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
       </Link>
       <div className='bg-gray-300 h-[1px] my-4'></div>
       <div className='my-5'>
-        <div>Khoản giá</div>
-        <form className='mt-2'>
+        <div>Khoảng giá</div>
+        <form className='mt-2' onSubmit={onSubmit}>
           <div className='flex items-start'>
-            <Input
-              type='text'
-              className='grow'
-              name='from'
-              placeholder='From vnd'
-              classNameInput='p-1 w-full text-sm outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
-            />
-            <div className='mx-2 mt-2 shrink-0'>-</div>
-            <Input
-              type='text'
-              className='grow'
-              name='from'
-              placeholder='To vnd'
-              classNameInput='p-1 w-full text-sm outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+            <Controller
+              control={control}
+              name='price_min'
+              render={({ field }) => {
+                return (
+                  <InputNumber
+                    type='text'
+                    placeholder='Từ vnd'
+                    classNameInput='p-1 w-full text-sm outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                    classNameError='hidden'
+                    {...field}
+                    onChange={(event) => {
+                      field.onChange(event)
+                      trigger('price_max')
+                    }}
+                    value={field.value}
+                    ref={field.ref}
+                  />
+                )
+              }}
             />
           </div>
+          <div className='flex items-start '>
+            <Controller
+              control={control}
+              name='price_max'
+              render={({ field }) => {
+                return (
+                  <InputNumber
+                    type='text'
+                    placeholder='Đến vnd'
+                    classNameInput='p-1 w-full text-sm outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                    classNameError='hidden'
+                    {...field}
+                    onChange={(event) => {
+                      field.onChange(event)
+                      trigger('price_min')
+                    }}
+                    value={field.value}
+                    ref={field.ref}
+                  />
+                )
+              }}
+            />
+          </div>
+          <div className='mt-1 min-h-[1.25rem] text-sm text-red-600 text-center'>{errors.price_min?.message}</div>
+
           <Button className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '>
             Apply
           </Button>
