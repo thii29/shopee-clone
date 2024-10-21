@@ -8,6 +8,8 @@ import InputNumber from 'src/components/InputNumber'
 import { useForm, Controller } from 'react-hook-form'
 import { priceSchema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
+import RatingStarts from '../RatingStars'
+import { omit } from 'lodash'
 
 interface Props {
   queryConfig: QueryConfig
@@ -40,9 +42,9 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
   const valueForm = watch()
   console.log(valueForm)
   console.log(errors)
-  const onSubmit = handleSubmit((data)=>{
+  const onSubmit = handleSubmit((data) => {
     navigate({
-      pathname:path.home,
+      pathname: path.home,
       search: createSearchParams({
         ...queryConfig,
         price_max: data.price_max,
@@ -50,6 +52,13 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
       }).toString()
     })
   })
+
+  const handlRemoveAll = () => {
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(omit(queryConfig, ['price_min', 'price_max', 'rating_filter', 'category'])).toString()
+    })
+  }
   return (
     <div className='py-4'>
       {/* khi ko co danh muc nao thi active all categories */}
@@ -193,57 +202,13 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
         </form>
       </div>
       <div className='text-sm'>Đánh giá</div>
-      <ul className='my-3'>
-        <li className='py-1 pl-2'>
-          <Link to='' className='flex items-center text-sm'>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className='size-5 fill-yellow-400 mr-1'
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </div>
-              ))}
-            <span>Trở lên</span>
-          </Link>
-        </li>
-
-        <li className='py-1 pl-2'>
-          <Link to='' className='flex items-center text-sm'>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <div key={index}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className='size-5 fill-yellow-400 mr-1'
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </div>
-              ))}
-            <span>Trở lên</span>
-          </Link>
-        </li>
-      </ul>
+      {/* Rating start */}
+      <RatingStarts queryConfig={queryConfig} />
       <div className='bg-gray-300 h-[1px] my-4'></div>
-      <Button className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '>
+      {/* delêt all side filter */}
+      <Button 
+      onClick={handlRemoveAll}
+      className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '>
         Xoá tất cả
       </Button>
     </div>
