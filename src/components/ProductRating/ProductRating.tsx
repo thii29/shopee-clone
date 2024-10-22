@@ -1,10 +1,18 @@
-export default function ProductRating({ rating }: { rating: number }) {
+export default function ProductRating({
+  rating,
+  activeClassname = 'size-3 fill-yellow-300 text-yellow-300',
+  nonActiveClassname = 'size-3 fill-gray-300 text-gray-300'
+}: {
+  rating: number
+  activeClassname?: string
+  nonActiveClassname?: string
+}) {
   const handleWith = (order: number) => {
-    if(order <= rating) {
+    if (order <= rating) {
       return '100%'
     }
-    if(order > rating && order - rating < 1){
-      return (rating-Math.floor(rating))*100 + '%'
+    if (order > rating && order - rating < 1) {
+      return (rating - Math.floor(rating)) * 100 + '%'
     }
     return '0%'
   }
@@ -14,12 +22,12 @@ export default function ProductRating({ rating }: { rating: number }) {
         .fill(0)
         .map((_, index) => (
           <div className='relative' key={index}>
-            <div className='absolute top-0 left-0 h-full overflow-hidden' style={{ width: handleWith(index+1) }}>
+            <div className='absolute top-0 left-0 h-full overflow-hidden' style={{ width: handleWith(index + 1) }}>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 20 20'
                 fill='currentColor'
-                className='size-3 fill-yellow-300 text-yellow-300'
+                className={activeClassname}
               >
                 <path
                   fillRule='evenodd'
@@ -32,7 +40,7 @@ export default function ProductRating({ rating }: { rating: number }) {
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 20 20'
               fill='currentColor'
-              className='size-3 fill-gray-300 text-gray-300'
+              className={nonActiveClassname}
             >
               <path
                 fillRule='evenodd'
