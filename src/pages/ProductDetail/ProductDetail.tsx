@@ -3,13 +3,14 @@ import DOMPurify from 'dompurify'
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/api/product.api'
-import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
 import { IProductList, Product, ProductListConfig } from 'src/types/product.type'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
 import Products from '../ProductList/Products'
+import QuantityController from 'src/components/QuantityController'
 
 export default function ProductDetail() {
+  const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
   const { data: productDetailData } = useQuery({
@@ -58,6 +59,10 @@ export default function ProductDetail() {
     setActiveImg(img)
   }
   //console.log(product)
+
+  const handleBuyCount = (value: number) => {
+    setBuyCount(value)
+  }
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
@@ -143,38 +148,17 @@ export default function ProductDetail() {
                 </div>
               </div>
               <div className='mt-8 flex items-center'>
-                <div className='capitalize text-gray-500'>Số lượng:</div>
-                <div className='ml-10 flex items-center'>
-                  <button className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='size-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M5 12h14' />
-                    </svg>
-                  </button>
-                  <InputNumber
-                    value={1}
-                    classNameError='hidden'
-                    classNameInput='h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-non'
-                  />
-                  <button className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='size-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-                    </svg>
-                  </button>
-                </div>
+                <div className='capitalize text-gray-500 mr-6'>Số lượng:</div>
+                {/* Quantity Controller */}
+                <QuantityController
+                  onDecrease={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                  onType={handleBuyCount}
+                  value={buyCount}
+                  max={product.quantity}
+                />
+                {/* Close Quantity Controller */}
+
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} sản phẩm có sẵn</div>
               </div>
               <div className='mt-8 flex items-center'>
@@ -213,9 +197,7 @@ export default function ProductDetail() {
       </div>
       <div className='mt-6'>
         <div className='container'>
-          <div className='rounded p-2 text-lg text-slate-700 uppercase'>
-            Có thể bạn cũng thích
-          </div>
+          <div className='rounded p-2 text-lg text-slate-700 uppercase'>Có thể bạn cũng thích</div>
           {productsData && (
             <div className='mt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'>
               {/* data ?. data|| */}
