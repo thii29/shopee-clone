@@ -1,4 +1,4 @@
-import { createSearchParams, Link, useNavigate } from 'react-router-dom'
+import { createSearchParams, Link, URLSearchParamsInit, useNavigate } from 'react-router-dom'
 import Popover from '../Popover '
 import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/api/auth.api'
@@ -7,14 +7,13 @@ import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import { useForm } from 'react-hook-form'
-import { Schema } from 'yup'
-import { schema } from 'src/utils/rules'
+import { Schema, schema as searchSchema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { omit } from 'lodash'
 
 type FormData = Pick<Schema, 'name'>
 
-const nameSchema = schema.pick(['name'])
+const nameSchema = searchSchema.pick(['name'])
 
 export default function Header() {
   const queryConfig = useQueryConfig()
@@ -49,7 +48,7 @@ export default function Header() {
       : { ...queryConfig, name: data.name }
     navigate({
       pathname: path.home,
-      search: createSearchParams(config).toString()
+      search: createSearchParams(config as URLSearchParamsInit).toString()
     })
   })
   return (

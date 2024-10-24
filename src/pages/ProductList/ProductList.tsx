@@ -21,7 +21,8 @@ export default function Produclist() {
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
     },
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    staleTime: 3 * 60 * 100 //3p nhung chuyen qua mili second
   })
   //console.log(data?.data.data) check lỗi trắng trang  
 

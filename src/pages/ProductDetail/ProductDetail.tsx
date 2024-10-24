@@ -5,8 +5,9 @@ import { useParams } from 'react-router-dom'
 import productApi from 'src/api/product.api'
 import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
-import { Product } from 'src/types/product.type'
+import { IProductList, Product, ProductListConfig } from 'src/types/product.type'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
+import Products from '../ProductList/Products'
 
 export default function ProductDetail() {
   const { nameId } = useParams()
@@ -18,8 +19,22 @@ export default function ProductDetail() {
   const [currentIndexImg, setCurrentIndexImg] = useState([0, 5])
   const [activeImg, setActiveImg] = useState('')
   const product = productDetailData?.data
-  const currentImg = useMemo(() => (product ? product.images.slice(...currentIndexImg) : []), [product, currentIndexImg])
+  const currentImg = useMemo(
+    () => (product ? product.images.slice(...currentIndexImg) : []),
+    [product, currentIndexImg]
+  )
   //console.log(product?.images)
+
+  const queryConfig: ProductListConfig = { limit: '20', page: '1', category: product?.category._id }
+  const { data: productsData } = useQuery<{ data: IProductList }>({
+    //cho nay de call api cho list
+    queryKey: ['products', queryConfig],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig)
+    },
+    staleTime: 3 * 60 * 100, //3p nhung chuyen qua mili second
+    enabled: Boolean(product)
+  })
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -34,7 +49,7 @@ export default function ProductDetail() {
   }
 
   const previous = () => {
-    if(currentIndexImg[0] > 0){
+    if (currentIndexImg[0] > 0) {
       setCurrentIndexImg((prev) => [prev[0] - 1, prev[1] - 1])
     }
   }
@@ -58,7 +73,10 @@ export default function ProductDetail() {
                 />
               </div>
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
-                <button className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white' onClick={previous}>
+                <button
+                  className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                  onClick={previous}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -83,7 +101,10 @@ export default function ProductDetail() {
                     </div>
                   )
                 })}
-                <button className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white' onClick={next}>
+                <button
+                  className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                  onClick={next}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -188,6 +209,23 @@ export default function ProductDetail() {
           <div className='mx-4 mt-12 mb-4 text-sm leading-loose'>
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
           </div>
+        </div>
+      </div>
+      <div className='mt-6'>
+        <div className='container'>
+          <div className='rounded p-2 text-lg text-slate-700 uppercase'>
+            Có thể bạn cũng thích
+          </div>
+          {productsData && (
+            <div className='mt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'>
+              {/* data ?. data|| */}
+              {(productsData?.data?.products || []).map((product) => (
+                <div className='col-span-1' key={product._id}>
+                  <Products product={product} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
