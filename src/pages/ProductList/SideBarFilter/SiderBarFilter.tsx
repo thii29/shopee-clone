@@ -10,6 +10,7 @@ import { priceSchema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import RatingStarts from '../RatingStars'
 import { omit } from 'lodash'
+import InputV2 from 'src/components/InputV2'
 
 interface Props {
   queryConfig: QueryConfig
@@ -149,7 +150,7 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
         <div>Khoảng giá</div>
         <form className='mt-2' onSubmit={onSubmit}>
           <div className='flex items-start'>
-            <Controller
+            {/* <Controller
               control={control}
               name='price_min'
               render={({ field }) => {
@@ -169,6 +170,18 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
                   />
                 )
               }}
+            /> */}
+            <InputV2
+              name='price_min'
+              control={control}
+              type='number'
+              placeholder='Từ vnd'
+              classNameInput='p-1 w-full text-sm outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+              classNameError='hidden'
+              onChange={() => {
+                trigger('price_max')
+              }}
+              
             />
           </div>
           <div className='flex items-start '>
@@ -206,9 +219,10 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
       <RatingStarts queryConfig={queryConfig} />
       <div className='bg-gray-300 h-[1px] my-4'></div>
       {/* delêt all side filter */}
-      <Button 
-      onClick={handlRemoveAll}
-      className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '>
+      <Button
+        onClick={handlRemoveAll}
+        className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '
+      >
         Xoá tất cả
       </Button>
     </div>
