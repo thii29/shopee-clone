@@ -42,6 +42,7 @@ export default function ProductDetail() {
     enabled: Boolean(product)
   })
 
+  //err-
   const addToCartMutation = useMutation(purchaseAPI.addToCart)
 
   console.log(purchaseAPI)
@@ -75,6 +76,7 @@ export default function ProductDetail() {
 
   const addToCart = () => {
     addToCartMutation.mutate(
+      //err-
       { buy_count: buyCount, product_id: product?._id as string },
       {
         onSuccess: (data) => {
