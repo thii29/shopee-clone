@@ -5,7 +5,7 @@ import { loginSchema, LoginSchema } from 'src/utils/rules'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/api/auth.api'
-import {ErrorResponse } from 'src/types/utils.type'
+import { ErrorResponse } from 'src/types/utils.type'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import Input from 'src/components/Input'
 import { useContext } from 'react'
@@ -15,7 +15,7 @@ import Button from 'src/components/Button'
 type FormData = LoginSchema
 
 export default function Login() {
-  const {setIsAuthenticated, setProfile} = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -60,20 +60,23 @@ export default function Login() {
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng nhập</div>
-              <Input
-                name='email'
-                register={register}
-                type='email'
-                className='mt-8'
-                errorMessage={errors.email?.message}
-                placeholder='Email'
-                //rules={rules.email}
-              />
+              <div className=''>
+                <Input
+                  name='email'
+                  register={register}
+                  type='email'
+                  className='mt-8 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                  errorMessage={errors.email?.message}
+                  placeholder='Email'
+                  //rules={rules.email}
+                />
+              </div>
+
               <Input
                 name='password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.password?.message}
                 placeholder='Password'
                 //rules={rules.password}
@@ -81,7 +84,9 @@ export default function Login() {
               />
               <div className='mt-3'>
                 <Button
-                  type='submit' isLoading={loginAccountMutation.isPending} disabled={loginAccountMutation.isPending}
+                  type='submit'
+                  isLoading={loginAccountMutation.isPending}
+                  disabled={loginAccountMutation.isPending}
                   className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex justify-center items-center'
                 >
                   Login

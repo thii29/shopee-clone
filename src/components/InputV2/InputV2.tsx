@@ -23,7 +23,7 @@ function InputV2<
     ...rest
   } = props
   const { field, fieldState } = useController(props)
-  console.log(field)
+  //console.log(field)
   const [localValue, setLocalValue] = useState<string>(field.value)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -149,7 +149,7 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
       <div className='my-5'>
         <div>Khoảng giá</div>
         <form className='mt-2' onSubmit={onSubmit}>
-          <div className='flex items-start'>
+          <div className='flex items-start gap-1'>
             {/* <Controller
               control={control}
               name='price_min'
@@ -181,10 +181,8 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
               onChange={() => {
                 trigger('price_max')
               }}
-              
             />
-          </div>
-          <div className='flex items-start '>
+
             <Controller
               control={control}
               name='price_max'
@@ -207,6 +205,7 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
               }}
             />
           </div>
+
           <div className='mt-1 min-h-[1.25rem] text-sm text-red-600 text-center'>{errors.price_min?.message}</div>
 
           <Button className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center '>

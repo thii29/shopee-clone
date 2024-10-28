@@ -1,6 +1,6 @@
 import { createSearchParams, Link, URLSearchParamsInit, useNavigate } from 'react-router-dom'
 import Popover from '../Popover '
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import authApi from 'src/api/auth.api'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
@@ -10,11 +10,15 @@ import { useForm } from 'react-hook-form'
 import { Schema, schema as searchSchema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { omit } from 'lodash'
+import { purchaseStatus } from 'src/constants/purchase'
+import purchaseAPI from 'src/api/purchase.api'
+import { formatCurrency } from 'src/utils/utils'
+import noproduct from 'src/assets/images/no-product.png'
 
 type FormData = Pick<Schema, 'name'>
 
 const nameSchema = searchSchema.pick(['name'])
-
+const MAX_PURCHASES = 5
 export default function Header() {
   const queryConfig = useQueryConfig()
   const navigate = useNavigate()
@@ -24,6 +28,7 @@ export default function Header() {
     },
     resolver: yupResolver(nameSchema)
   })
+
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
   const { mutate: requestLogout } = useMutation({
     mutationFn: authApi.logout,
@@ -32,6 +37,14 @@ export default function Header() {
       setProfile(null)
     }
   })
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ['purchases', { status: purchaseStatus.inCart }],
+    queryFn: () => purchaseAPI.getPurchase({ status: purchaseStatus.inCart })
+  })
+
+  const purchasesInCart = purchasesInCartData?.data.data
+  console.log(purchasesInCart)
+
   const handleLogout = () => {
     requestLogout()
   }
@@ -172,82 +185,51 @@ export default function Header() {
             </div>
           </form>
           <div className='col-span-1 justify-self-start'>
-            <Popover
+          <Popover
               renderPopover={
-                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[448px] text-md px-3 py-2'>
-                  <div className='text-gray-400 capitalize'>Recently Added Products</div>
-                  <div className='mt-5'>
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
-                          alt='img'
-                          className='w-11 h-11 object-cover'
-                        />
+                <div className='relative max-w-[400px] rounded-sm border border-gray-200 bg-white text-sm shadow-md'>
+                  {purchasesInCart ? (
+                    <div className='p-2'>
+                      <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
+                      <div className='mt-5'>
+                        {purchasesInCart.slice(0, MAX_PURCHASES).map((purchase) => (
+                          <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
+                            <div className='flex-shrink-0'>
+                              <img
+                                src={purchase.product.image}
+                                alt={purchase.product.name}
+                                className='h-11 w-11 object-cover'
+                              />
+                            </div>
+                            <div className='ml-2 flex-grow overflow-hidden'>
+                              <div className='truncate'>{purchase.product.name}</div>
+                            </div>
+                            <div className='ml-2 flex-shrink-0'>
+                              <span className='text-orange'>₫{formatCurrency(purchase.product.price)}</span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>đ12.900</span>
-                      </div>
-                    </div>
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
-                          alt='img'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>đ12.900</span>
-                      </div>
-                    </div>
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
-                          alt='img'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>đ12.900</span>
+                      <div className='mt-6 flex items-center justify-between'>
+                        <div className='text-xs capitalize text-gray-500'>
+                          {purchasesInCart.length > MAX_PURCHASES ? purchasesInCart.length - MAX_PURCHASES : ''} Thêm
+                          hàng vào giỏ
+                        </div>
+                        <button className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'>
+                          Xem giỏ hàng
+                        </button>
                       </div>
                     </div>
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFr3LxjV9oRHbPPYEvzq_XFO7tBY-DNwW8cw&s'
-                          alt='img'
-                          className='w-11 h-11 object-cover'
-                        />
-                      </div>
-                      <div className='flex-grow ml-2 overflow-hidden'>
-                        <div className='truncate'>Ốp lưng Iphone Samsung Vivo Oppo | Ốp cường lực </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>đ12.900</span>
-                      </div>
+                  ) : (
+                    <div className='flex h-[300px] w-[300px] items-center justify-center p-2'>
+                      <img src={noproduct} alt='no purchase' className='h-24 w-24' />
+                      <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
                     </div>
-                  </div>
-                  <div className='flex mt-6 items-center justify-between'>
-                    <div className='capitalize text-xs text-gray-500'>3 more products in cart</div>
-                    <button className='capitalize bg-orange hover:bg-opacity-90 px-4 py-2 rounded-sm text-white'>
-                      View my shopping cart
-                    </button>
-                  </div>
+                  )}
                 </div>
               }
             >
-              <Link to='/'>
+              <Link to='/' className='relative'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -262,6 +244,9 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
                   />
                 </svg>
+                <span className='absolute left-[17px] top-[-5px] rounded-full bg-white px-[9px] py-[1px] text-xs text-orange'>
+                  {purchasesInCart?.length}
+                </span>
               </Link>
             </Popover>
           </div>

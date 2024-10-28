@@ -81,9 +81,9 @@ export default function Register() {
                 name='email'
                 register={register}
                 type='email'
-                className='mt-8'
+                className='mt-8 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.email?.message}
-                placeHolder='Email'
+                placeholder='Email'
                 //rules={rules.email}
               />
               {/* <div className='mt-8'>
@@ -101,9 +101,9 @@ export default function Register() {
                 name='password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.password?.message}
-                placeHolder='Password'
+                placeholder='Password'
                 //rules={rules.password}
                 autoComplete='on'
               />
@@ -111,17 +111,17 @@ export default function Register() {
                 name='confirm_password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.confirm_password?.message}
-                placeHolder='Confirm Password'
+                placeholder='Confirm Password'
                 //rules={rules.confirm_password}
                 autoComplete='on'
               />
               <div className='mt-2'>
                 <Button
                   type='submit'
-                  isLoading={registerAccountMutation.isLoading}
-                  disabled={registerAccountMutation.isLoading}
+                  isLoading={registerAccountMutation.isPending}
+                  disabled={registerAccountMutation.isPaused}
                   className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex justify-center items-center'
                 >
                   Sign up
