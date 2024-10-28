@@ -1,19 +1,21 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import productApi from 'src/api/product.api'
+import purchaseAPI from 'src/api/purchase.api'
 import ProductRating from 'src/components/ProductRating'
+import QuantityController from 'src/components/QuantityController'
+import { purchaseStatus } from 'src/constants/purchase'
+import { AppContext } from 'src/contexts/app.context'
+import { queryClient } from 'src/main'
 import { IProductList, Product, ProductListConfig } from 'src/types/product.type'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
 import Products from '../ProductList/Products'
-import QuantityController from 'src/components/QuantityController'
-import purchaseAPI from 'src/api/purchase.api'
-import { purchaseStatus } from 'src/constants/purchase'
-import { toast } from 'react-toastify'
-import { queryClient } from 'src/main'
 
 export default function ProductDetail() {
+  const { isAuthenticated } = useContext(AppContext)
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -43,10 +45,13 @@ export default function ProductDetail() {
 
   //da fix: useMutation truyen vao 1 object trong do co mutationFn de truyen vo function
   //purchaseAPI.addToCart la 1 function
-  
-  const addToCartMutation = useMutation({mutationFn: purchaseAPI.addToCart})
 
-  console.log(purchaseAPI)
+  // LESSON : addToCartMutation = useMutation ....
+  // => rut gon vì useMutation trả về cho em 1 object
+  // em có thể dùng addToCartMutation.mutate hoặc { mutate } = useMutation....
+  // và có thể đổi tên cho phù hợp với function
+  // VD liên kết : const {title : productTitle} = props
+  const { mutate: requestAddToCart } = useMutation({ mutationFn: purchaseAPI.addToCart })
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -75,13 +80,23 @@ export default function ProductDetail() {
     setBuyCount(value)
   }
 
+  // LESSON:
+  // Khi anh bấm add to cart thì anh truyền productId lên backend
+  // backend sẽ lấy productId đó tìm trong list database sau đó add vô database cart của user (user này backend nhận biết thông qua accesstoken được truyền lên)
+  // nên để ý lúc nào sẽ call những api mà CẦN đăng nhập mới đc call
+  // sau khi add vô list cart của user thì trả lại api cart thông qua endpoint url :"/cart"
+  // Nhiệm vụ của fe là get lại api cart đó rồi show lên UI
   const addToCart = () => {
-    addToCartMutation.mutate(
+    if (!isAuthenticated) {
+      toast.error('Bạn cần đăng nhập để mua hàng')
+      return
+    }
+    requestAddToCart(
       //err-
       { buy_count: buyCount, product_id: product?._id as string },
       {
         onSuccess: (data) => {
-          toast.success(data.data.message, {
+          toast.success(data?.message, {
             autoClose: 1000
           })
           queryClient.invalidateQueries({
@@ -95,6 +110,17 @@ export default function ProductDetail() {
         }
       }
     )
+
+    // Không sài react query
+    // step 1 : call requestAddToCart
+    // step 2  : const data = await requestAddToCart({ buy_count: buyCount, product_id: product?._id as string })
+    /* step 3 if(data) {
+      thông báo thành công
+      const newCart = await getUserCart()
+      localStorage.setItem('cart', JSON.stringify(newCart))
+    } */
+    // step 4 ở trang cart thì dùng const purchasesInCart = localStorage.getItem('cart')
+    // logout => clear localStorage
   }
 
   if (!product) return null
