@@ -12,7 +12,6 @@ import purchaseAPI from 'src/api/purchase.api'
 import { purchaseStatus } from 'src/constants/purchase'
 import { toast } from 'react-toastify'
 import { queryClient } from 'src/main'
-import { number } from 'yup'
 
 export default function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
@@ -42,8 +41,10 @@ export default function ProductDetail() {
     enabled: Boolean(product)
   })
 
-  //err-
-  const addToCartMutation = useMutation(purchaseAPI.addToCart)
+  //da fix: useMutation truyen vao 1 object trong do co mutationFn de truyen vo function
+  //purchaseAPI.addToCart la 1 function
+  
+  const addToCartMutation = useMutation({mutationFn: purchaseAPI.addToCart})
 
   console.log(purchaseAPI)
 
