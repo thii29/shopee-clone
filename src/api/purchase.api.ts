@@ -4,21 +4,21 @@ import http from 'src/utils/http'
 
 const URL = 'purchases'
 const purchaseAPI = {
-  addToCart(body: { product_id: string; buy_count: number }) {
-    return http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body)
+  addToCart(body: { product_id: string; buy_count: number }): Promise<SuccessResponse<Purchase>> {
+    return http.post(`${URL}/add-to-cart`, body)
   },
 
-  getPurchase(params: { status: PurchaseListStatus }) {
-    return http.get<SuccessResponse<Purchase[]>>(`${URL}`, { params })
+  getPurchase(params: { status: PurchaseListStatus }): Promise<SuccessResponse<Purchase[]>> {
+    return http.get(`${URL}`, { params })
   },
-  buyProducts(body: {product_id: string, buy_count: number}[]){
-    return http.post<SuccessResponse<Purchase[]>>(`${URL}/buy-product`,body)
+  buyProducts(body: { product_id: string; buy_count: number }[]) {
+    return http.post<SuccessResponse<Purchase[]>>(`${URL}/buy-product`, body)
   },
-  updatePurchase(body: {product_id: string, buy_count: number}){
+  updatePurchase(body: { product_id: string; buy_count: number }) {
     return http.put<SuccessResponse<Purchase>>(`${URL}/update-purchase`, body)
   },
-  deletePurchase(purchaseIds: string){
-    return http.delete<SuccessResponse<{deleted_count: number}>>(`${URL}`,{
+  deletePurchase(purchaseIds: string) {
+    return http.delete<SuccessResponse<{ deleted_count: number }>>(`${URL}`, {
       data: purchaseIds
     })
   }

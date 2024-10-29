@@ -45,7 +45,7 @@ export default function Header() {
     enabled: isAuthenticated
   })
 
-  const purchasesInCart = purchasesInCartData?.data.data
+  const purchasesInCart = purchasesInCartData?.data
   console.log(purchasesInCart)
 
   const handleLogout = () => {
@@ -206,6 +206,7 @@ export default function Header() {
                             </div>
                             <div className='ml-2 flex-grow overflow-hidden'>
                               <div className='truncate'>{purchase.product.name}</div>
+                              
                             </div>
                             <div className='ml-2 flex-shrink-0'>
                               <span className='text-orange'>₫{formatCurrency(purchase.product.price)}</span>

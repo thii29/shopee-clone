@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/api/product.api'
 import ProductRating from 'src/components/ProductRating'
@@ -12,8 +12,10 @@ import purchaseAPI from 'src/api/purchase.api'
 import { purchaseStatus } from 'src/constants/purchase'
 import { toast } from 'react-toastify'
 import { queryClient } from 'src/main'
+import { AppContext } from 'src/contexts/app.context'
 
 export default function ProductDetail() {
+  const {isAuthenticated} = useContext(AppContext)
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -44,7 +46,7 @@ export default function ProductDetail() {
   //da fix: useMutation truyen vao 1 object trong do co mutationFn de truyen vo function
   //purchaseAPI.addToCart la 1 function
   
-  const addToCartMutation = useMutation({mutationFn: purchaseAPI.addToCart})
+  const {mutate: requestAddToCart} = useMutation({mutationFn: purchaseAPI.addToCart})
 
   console.log(purchaseAPI)
 
@@ -76,12 +78,16 @@ export default function ProductDetail() {
   }
 
   const addToCart = () => {
-    addToCartMutation.mutate(
+    if(!isAuthenticated){
+      toast.error('Bạn cần đăng nhập để mua hàng!')
+      return
+    }
+    requestAddToCart(
       //err-
       { buy_count: buyCount, product_id: product?._id as string },
       {
         onSuccess: (data) => {
-          toast.success(data.data.message, {
+          toast.success(data?.message, {
             autoClose: 1000
           })
           queryClient.invalidateQueries({
