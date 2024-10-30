@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import purchaseAPI from 'src/api/purchase.api'
@@ -9,6 +9,7 @@ import { purchaseStatus } from 'src/constants/purchase'
 import { Purchase } from 'src/types/purchase.type'
 import { formatCurrency, generateNameId } from 'src/utils/utils'
 import { produce } from 'immer'
+import { keyBy } from 'lodash'
 
 interface ExtendedPurchase extends Purchase {
   disabled: boolean
@@ -17,16 +18,31 @@ interface ExtendedPurchase extends Purchase {
 
 export default function Cart() {
   const [extendedPurchase, setExtendedPurchase] = useState<ExtendedPurchase[]>([])
-  const { data: purchasesInCartData } = useQuery({
+  const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ['purchases', { status: purchaseStatus.inCart }],
     queryFn: () => purchaseAPI.getPurchase({ status: purchaseStatus.inCart })
   })
-
+  const { mutate: updatePurchaseMutation } = useMutation({
+    mutationFn: purchaseAPI.updatePurchase,
+    onSuccess: () => {
+      refetch()
+    }
+  })
   const purchasesInCart = purchasesInCartData?.data
   const isAllChecked = extendedPurchase.every((purchase) => purchase.checked)
   //re-call api
   useEffect(() => {
-    setExtendedPurchase(purchasesInCart?.map((purchase) => ({ ...purchase, disabled: false, checked: false })) || [])
+    setExtendedPurchase((prev) => {
+      const extendedPurchaseObject = keyBy(prev, '_id')
+      console.log(extendedPurchaseObject)
+      return (
+        purchasesInCart?.map((purchase) => ({
+          ...purchase,
+          disabled: false,
+          checked: Boolean(extendedPurchaseObject[purchase._id]?.checked)
+        })) || []
+      )
+    })
   }, [purchasesInCart])
 
   const handleCheck = (productIndex: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +56,25 @@ export default function Cart() {
   const handleCheckAll = () => {
     setExtendedPurchase((prev) => prev.map((purchase) => ({ ...purchase, checked: !isAllChecked })))
   }
+  const handleTypeQuantity = (purchaseIndex: number) => (value: number) => {
+    setExtendedPurchase(
+      produce((draft) => {
+        draft[purchaseIndex].buy_count = value
+      })
+    )
+  }
+
+  const handleQuantity = (purchaseIndex: number, value: number, enable: boolean) => {
+    if (enable) {
+      const purchase = extendedPurchase[purchaseIndex]
+      setExtendedPurchase(
+        produce((draft) => {
+          draft[purchaseIndex].disabled = true
+        })
+      )
+      updatePurchaseMutation({ product_id: purchase.product._id, buy_count: value })
+    }
+  }
   return (
     <div className='bg-neutral-100 py-16'>
       <div className='container'>
@@ -51,7 +86,12 @@ export default function Cart() {
                 <div className='flex items-center'>
                   {/* check box input */}
                   <div className='flex flex-shrink-0 items-center justify-center pr-3'>
-                    <input type='checkbox' className='h-5 w-5 accent-orange' checked={isAllChecked} onChange={handleCheckAll}/>
+                    <input
+                      type='checkbox'
+                      className='h-5 w-5 accent-orange'
+                      checked={isAllChecked}
+                      onChange={handleCheckAll}
+                    />
                   </div>
                   {/* close check box input */}
                   <div className='flex-grow text-black'>Sản phẩm</div>
@@ -122,6 +162,19 @@ export default function Cart() {
                           max={purchase.product.quantity}
                           value={purchase.buy_count}
                           classNameWrapper='flex items-center'
+                          onIncrease={(value) => handleQuantity(index, value, value < purchase.product.quantity)}
+                          onDecrease={(value) => handleQuantity(index, value, value >= 1)}
+                          onType={handleTypeQuantity(index)}
+                          onFocusOut={(value) =>
+                            handleQuantity(
+                              index,
+                              value,
+                              value >= 1 &&
+                                value < purchase.product.quantity &&
+                                value !== (purchasesInCart as Purchase[])[index].buy_count
+                            )
+                          }
+                          disabled={purchase.disabled}
                         />
                       </div>
                       {/* total price */}
@@ -146,7 +199,14 @@ export default function Cart() {
       <div className='sticky bottom-0 z-10 flex flex-col mt-10 rounded-sm bg-white p-5 shadow border-gray-500 sm:flex-row sm:items-center sm:justify-start'>
         <div className='flex items-center'>
           <div className='flex flex-shrink-0 items-center justify-center pr-3'>
-            <input type='checkbox' name='' id='' className='h-5 w-5 accent-orange' checked={isAllChecked} onChange={handleCheckAll}/>
+            <input
+              type='checkbox'
+              name=''
+              id=''
+              className='h-5 w-5 accent-orange'
+              checked={isAllChecked}
+              onChange={handleCheckAll}
+            />
           </div>
           <button className='mx-3 border-none bg-none hover:text-orange' onClick={handleCheckAll}>
             Chọn tất cả ({extendedPurchase.length})
