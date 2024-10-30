@@ -10,6 +10,7 @@ import { Purchase } from 'src/types/purchase.type'
 import { formatCurrency, generateNameId } from 'src/utils/utils'
 import { produce } from 'immer'
 import { keyBy } from 'lodash'
+import { toast } from 'react-toastify'
 
 interface ExtendedPurchase extends Purchase {
   disabled: boolean
@@ -28,8 +29,37 @@ export default function Cart() {
       refetch()
     }
   })
+
+  const buyProductMutation = useMutation({
+    mutationFn: purchaseAPI.buyProducts,
+    onSuccess: (data) => {
+      refetch()
+      toast.success(data.data.message, {
+        position: 'top-center',
+        autoClose: 1000
+      })
+    }
+  })
+
+  const deleteProductMutation = useMutation({
+    mutationFn: purchaseAPI.deletePurchase,
+    onSuccess: () => {
+      refetch()
+    }
+  })
   const purchasesInCart = purchasesInCartData?.data
   const isAllChecked = extendedPurchase.every((purchase) => purchase.checked)
+  const checkedPurchases = extendedPurchase.filter((purchase) => purchase.checked)
+  const checkedCount = checkedPurchases.length
+
+  const totalCheckedPurchasePrice = checkedPurchases.reduce((result, current) => {
+    return result + current.product.price * current.buy_count
+  }, 0)
+
+  const totalCheckedPurchaseSavingPrice = checkedPurchases.reduce((result, current) => {
+    return result + (current.product.price_before_discount - current.product.price) * current.buy_count
+  }, 0)
+
   //re-call api
   useEffect(() => {
     setExtendedPurchase((prev) => {
@@ -75,6 +105,28 @@ export default function Cart() {
       updatePurchaseMutation({ product_id: purchase.product._id, buy_count: value })
     }
   }
+
+  const handleDelete = (purchaseIndex: number) => () => {
+    const purchaseId = extendedPurchase[purchaseIndex]._id
+    deleteProductMutation(purchaseId)
+  }
+
+  const handleDeleteManyPurchase = () => {
+    const purchaseIds = checkedPurchases.map((purchase) => purchase._id)
+    // ???
+    deleteProductMutation(purchaseIds)
+  }
+
+  const handleBuyProducts = () => {
+    if (checkedPurchases.length > 0) {
+      const body = checkedPurchases.map((purchase) => ({
+        product_id: purchase.product._id,
+        buy_count: purchase.buy_count
+      }))
+      buyProductMutation(body)
+    }
+  }
+
   return (
     <div className='bg-neutral-100 py-16'>
       <div className='container'>
@@ -107,91 +159,98 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className='my-3 rounded-sm bg-white p-5 shadow'>
-              {extendedPurchase?.map((purchase, index) => (
-                <div
-                  key={purchase._id}
-                  className='mt-5 grid grid-cols-12 text-center rounded-sm border border-gray-200 bg-white py-5 px-4 text-sm text-gray-500'
-                >
-                  <div className='col-span-6'>
-                    <div className='flex'>
-                      <div className='flex flex-shrink-0 items-center justify-center pr-3'>
-                        <input
-                          type='checkbox'
-                          className='h-5 w-5 accent-orange'
-                          checked={purchase.checked}
-                          onChange={handleCheck(index)}
-                        />
-                      </div>
-                      {/* img and product name */}
-                      <div className='flex-grow'>
-                        <div className='flex'>
-                          <Link
-                            to={`${path.home}${generateNameId({ name: purchase.product.name, id: purchase.product._id })}`}
-                            className='h-24 w-24 flex-shrink-0 border rounded-sm'
-                          >
-                            <img alt={purchase.product.name} src={purchase.product.image} />
-                          </Link>
-                          <div className='flex-grow px-5 pt-1 pb-2'>
+            {extendedPurchase.length > 0 && (
+              <div className='my-3 rounded-sm bg-white p-5 shadow'>
+                {extendedPurchase?.map((purchase, index) => (
+                  <div
+                    key={purchase._id}
+                    className='mt-5 items-center grid grid-cols-12 text-center rounded-sm border border-gray-200 bg-white py-5 px-4 text-sm text-gray-500'
+                  >
+                    <div className='col-span-6'>
+                      <div className='flex'>
+                        <div className='flex flex-shrink-0 items-center justify-center pr-3'>
+                          <input
+                            type='checkbox'
+                            className='h-5 w-5 accent-orange'
+                            checked={purchase.checked}
+                            onChange={handleCheck(index)}
+                          />
+                        </div>
+                        {/* img and product name */}
+                        <div className='flex-grow'>
+                          <div className='flex items-center'>
                             <Link
                               to={`${path.home}${generateNameId({ name: purchase.product.name, id: purchase.product._id })}`}
-                              className='line-clamp-2 text-left'
+                              className='h-24 w-24 flex-shrink-0 border rounded-sm '
                             >
-                              {purchase.product.name}
+                              <img alt={purchase.product.name} src={purchase.product.image} />
                             </Link>
+                            <div className='flex-grow px-5 pt-1 pb-2'>
+                              <Link
+                                to={`${path.home}${generateNameId({ name: purchase.product.name, id: purchase.product._id })}`}
+                                className='line-clamp-2 text-left'
+                              >
+                                {purchase.product.name}
+                              </Link>
+                            </div>
                           </div>
                         </div>
+                        {/* close img and product name */}
                       </div>
-                      {/* close img and product name */}
                     </div>
-                  </div>
-                  <div className='col-span-6'>
-                    <div className='grid grid-cols-5 items-center'>
-                      {/* price */}
-                      <div className='col-span-2'>
-                        <div className='flex item-center justify-center'>
-                          <span className='text-gray-300 line-through'>
-                            {formatCurrency(purchase.product.price_before_discount)}
+                    <div className='col-span-6'>
+                      <div className='grid grid-cols-5 items-center'>
+                        {/* price */}
+                        <div className='col-span-2'>
+                          <div className='flex item-center justify-center'>
+                            <span className='text-gray-300 line-through'>
+                              {formatCurrency(purchase.product.price_before_discount)}
+                            </span>
+                            <span className='ml-3'>{formatCurrency(purchase.product.price)} vnd</span>
+                          </div>
+                        </div>
+                        {/* close price */}
+                        <div className='col-span-1'>
+                          <QuantityController
+                            max={purchase.product.quantity}
+                            value={purchase.buy_count}
+                            classNameWrapper='flex items-center'
+                            onIncrease={(value) => handleQuantity(index, value, value < purchase.product.quantity)}
+                            onDecrease={(value) => handleQuantity(index, value, value >= 1)}
+                            onType={handleTypeQuantity(index)}
+                            onFocusOut={(value) =>
+                              handleQuantity(
+                                index,
+                                value,
+                                value >= 1 &&
+                                  value < purchase.product.quantity &&
+                                  value !== (purchasesInCart as Purchase[])[index].buy_count
+                              )
+                            }
+                            disabled={purchase.disabled}
+                          />
+                        </div>
+                        {/* total price */}
+                        <div className='col-span-1'>
+                          <span className='text-orange'>
+                            {formatCurrency(purchase.product.price * purchase.buy_count)}
                           </span>
-                          <span className='ml-3'>{formatCurrency(purchase.product.price)} vnd</span>
+                        </div>
+                        {/* close total price */}
+                        <div className='col-span-1'>
+                          <button
+                            className='bg-non text-black transition-color hover:text-orange'
+                            onClick={handleDelete(index)}
+                          >
+                            Xoá
+                          </button>
                         </div>
                       </div>
-                      {/* close price */}
-                      <div className='col-span-1'>
-                        <QuantityController
-                          max={purchase.product.quantity}
-                          value={purchase.buy_count}
-                          classNameWrapper='flex items-center'
-                          onIncrease={(value) => handleQuantity(index, value, value < purchase.product.quantity)}
-                          onDecrease={(value) => handleQuantity(index, value, value >= 1)}
-                          onType={handleTypeQuantity(index)}
-                          onFocusOut={(value) =>
-                            handleQuantity(
-                              index,
-                              value,
-                              value >= 1 &&
-                                value < purchase.product.quantity &&
-                                value !== (purchasesInCart as Purchase[])[index].buy_count
-                            )
-                          }
-                          disabled={purchase.disabled}
-                        />
-                      </div>
-                      {/* total price */}
-                      <div className='col-span-1'>
-                        <span className='text-orange'>
-                          {formatCurrency(purchase.product.price * purchase.buy_count)}
-                        </span>
-                      </div>
-                      {/* close total price */}
-                      <div className='col-span-1'>
-                        <button className='bg-non text-black transition-color hover:text-orange'>Xoá</button>
-                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -211,22 +270,28 @@ export default function Cart() {
           <button className='mx-3 border-none bg-none hover:text-orange' onClick={handleCheckAll}>
             Chọn tất cả ({extendedPurchase.length})
           </button>
-          <button className='mx-3 border-none bg-none hover:text-orange'>Xoá</button>
+          <button className='mx-3 border-none bg-none hover:text-orange' onClick={handleDeleteManyPurchase}>
+            Xoá
+          </button>
         </div>
 
         <div className='ml-auto flex flex-col items-center mt-5 sm:mt-0 sm:flex-row'>
           <div className='sm:justify-end'>
             <div className='flex items-center'>
-              <div>Tổng thanh toán ...(sản phẩm): </div>
-              <div className='ml-2 text-2xl text-orange'>12.000.000 vnd</div>
+              <div>Tổng thanh toán ({checkedCount} sản phẩm): </div>
+              <div className='ml-2 text-2xl text-orange'>{formatCurrency(totalCheckedPurchasePrice)} vnd</div>
             </div>
             <div className='flex items-center justify-end text-sm sm:justify-end'>
               <div className='text-gray-500'>Tiết kiệm </div>
-              <div className='ml-6 text-orange'>1.100.000 </div>
+              <div className='ml-6 text-orange'>{formatCurrency(totalCheckedPurchaseSavingPrice)} </div>
             </div>
           </div>
         </div>
-        <Button className='h-10 w-52 text-center py-4 px-2 uppercase bg-orange/85 text-white text-sm hover:bg-orange flex justify-center items-center sm:mt-0 sm:ml-6'>
+        <Button
+          onClick={handleBuyProducts}
+          disabled={buyProductMutation.isPending}
+          className='h-10 w-52 text-center py-4 px-2 uppercase bg-orange/85 text-white text-sm hover:bg-orange flex justify-center items-center sm:mt-0 sm:ml-6'
+        >
           Mua hàng
         </Button>
       </div>
