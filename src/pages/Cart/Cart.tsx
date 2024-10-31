@@ -30,18 +30,18 @@ export default function Cart() {
     }
   })
 
-  const buyProductMutation = useMutation({
+  const {mutate: buyProductMutation, isPending} = useMutation({
     mutationFn: purchaseAPI.buyProducts,
     onSuccess: (data) => {
       refetch()
-      toast.success(data.data.message, {
+      toast.success(data.message, {
         position: 'top-center',
         autoClose: 1000
       })
     }
   })
 
-  const deleteProductMutation = useMutation({
+  const {mutate: deleteProductMutation} = useMutation({
     mutationFn: purchaseAPI.deletePurchase,
     onSuccess: () => {
       refetch()
@@ -108,7 +108,7 @@ export default function Cart() {
 
   const handleDelete = (purchaseIndex: number) => () => {
     const purchaseId = extendedPurchase[purchaseIndex]._id
-    deleteProductMutation(purchaseId)
+    deleteProductMutation([purchaseId])
   }
 
   const handleDeleteManyPurchase = () => {
@@ -289,7 +289,7 @@ export default function Cart() {
         </div>
         <Button
           onClick={handleBuyProducts}
-          disabled={buyProductMutation.isPending}
+          disabled={isPending}
           className='h-10 w-52 text-center py-4 px-2 uppercase bg-orange/85 text-white text-sm hover:bg-orange flex justify-center items-center sm:mt-0 sm:ml-6'
         >
           Mua hàng

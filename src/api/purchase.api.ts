@@ -11,13 +11,13 @@ const purchaseAPI = {
   getPurchase(params: { status: PurchaseListStatus }): Promise<SuccessResponse<Purchase[]>> {
     return http.get(`${URL}`, { params })
   },
-  buyProducts(body: { product_id: string; buy_count: number }[]) {
-    return http.post<SuccessResponse<Purchase[]>>(`${URL}/buy-product`, body)
+  buyProducts(body: { product_id: string; buy_count: number }[]):Promise<SuccessResponse<Purchase[]>> {
+    return http.post(`${URL}/buy-products`, body)
   },
-  updatePurchase(body: { product_id: string; buy_count: number }) {
-    return http.put<SuccessResponse<Purchase>>(`${URL}/update-purchase`, body)
+  updatePurchase(body: { product_id: string; buy_count: number }): Promise<SuccessResponse<Purchase>> {
+    return http.put(`${URL}/update-purchase`, body)
   },
-  deletePurchase(purchaseIds: string) {
+  deletePurchase(purchaseIds: string[]) {
     return http.delete<SuccessResponse<{ deleted_count: number }>>(`${URL}`, {
       data: purchaseIds
     })
