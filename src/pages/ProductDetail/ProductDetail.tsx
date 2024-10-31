@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/api/product.api'
 import ProductRating from 'src/components/ProductRating'
 import { IProductList, Product, ProductListConfig } from 'src/types/product.type'
@@ -13,9 +13,10 @@ import { purchaseStatus } from 'src/constants/purchase'
 import { toast } from 'react-toastify'
 import { queryClient } from 'src/main'
 import { AppContext } from 'src/contexts/app.context'
+import path from 'src/constants/path'
 
 export default function ProductDetail() {
-  const {isAuthenticated} = useContext(AppContext)
+  const { isAuthenticated } = useContext(AppContext)
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -45,10 +46,11 @@ export default function ProductDetail() {
 
   //da fix: useMutation truyen vao 1 object trong do co mutationFn de truyen vo function
   //purchaseAPI.addToCart la 1 function
-  
-  const {mutate: requestAddToCart} = useMutation({mutationFn: purchaseAPI.addToCart})
 
-  console.log(purchaseAPI)
+  const { mutate: requestAddToCart, mutateAsync } = useMutation({ mutationFn: purchaseAPI.addToCart })
+
+  const navigate = useNavigate()
+  //console.log(purchaseAPI)
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -78,7 +80,7 @@ export default function ProductDetail() {
   }
 
   const addToCart = () => {
-    if(!isAuthenticated){
+    if (!isAuthenticated) {
       toast.error('Bạn cần đăng nhập để mua hàng!')
       return
     }
@@ -101,6 +103,16 @@ export default function ProductDetail() {
         }
       }
     )
+  }
+
+  const buyNow = async () => {
+    const res = await mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
+    const purchase = res.data
+    navigate(path.cart,{
+      state: {
+        purchaseId: purchase._id
+      }
+    })
   }
 
   if (!product) return null
@@ -222,7 +234,8 @@ export default function ProductDetail() {
                   </svg>
                   Thêm vào giỏ hàng
                 </button>
-                <button className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white outline-none shadow-sm hover:bg-orange/80'>
+                <button onClick={buyNow}
+                className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white outline-none shadow-sm hover:bg-orange/80'>
                   Mua ngay
                 </button>
               </div>
