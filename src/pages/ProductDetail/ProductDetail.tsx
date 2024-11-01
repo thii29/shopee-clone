@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -11,12 +11,12 @@ import QuantityController from 'src/components/QuantityController'
 import purchaseAPI from 'src/api/purchase.api'
 import { purchaseStatus } from 'src/constants/purchase'
 import { toast } from 'react-toastify'
-import { queryClient } from 'src/main'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
 
 export default function ProductDetail() {
   const { isAuthenticated } = useContext(AppContext)
+  const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)

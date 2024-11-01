@@ -4,13 +4,12 @@ import { useContext } from "react";
 import path from "src/constants/path";
 import { AppContext } from "src/contexts/app.context";
 import authApi from "src/api/auth.api";
-import { queryClient } from "src/main";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { purchaseStatus } from "src/constants/purchase";
 
 export default function NavHeader() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
-
+  const queryClient = useQueryClient()
   const { mutate: requestLogout } = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
