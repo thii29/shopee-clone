@@ -46,7 +46,7 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
             onChange={handleChange}
             name='date'
           >
-            <option value={value?.getDate() || date.date}>Ngày</option>
+            <option value={value?.getDate() || date.date}>{date?.date ? date.date : 1}</option>
             {range(1, 32).map((item) => (
               <option value={item} key={item}>
                 {item}
@@ -59,7 +59,7 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
             onChange={handleChange}
             name='month'
           >
-            <option value={value?.getMonth() || date.month}>Tháng</option>
+            <option value={value?.getMonth() || date.month}>{date?.month ? date.month : 1}</option>
             {range(1, 13).map((item) => (
               <option value={item} key={item}>
                 {item}
@@ -72,7 +72,7 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
             onChange={handleChange}
             name='year'
           >
-            <option value={value?.getFullYear() || date.year}>Năm</option>
+            <option value={value?.getFullYear() || date.year}>{date?.year ? date.year : 1}</option>
             {range(1990, 2025).map((item) => (
               <option value={item} key={item}>
                 {item}
