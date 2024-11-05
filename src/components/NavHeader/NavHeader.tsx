@@ -6,6 +6,7 @@ import { AppContext } from "src/contexts/app.context";
 import authApi from "src/api/auth.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { purchaseStatus } from "src/constants/purchase";
+import userImg from 'src/assets/images/user.svg'
 
 export default function NavHeader() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
@@ -85,7 +86,7 @@ export default function NavHeader() {
         >
           <div className='w-5 h-5 flex-shrink-0'>
             <img
-              src='https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/386357827_122121435266036231_1463382430782505098_n.jpg?stp=dst-jpg_s120x120&_nc_cat=105&ccb=1-7&_nc_sid=e8ff23&_nc_eui2=AeEoX_6NwCjRkqZwWjy9A-oKDozDN2As0LgOjMM3YCzQuFM6ItwqEZgMqYEv47NNyvaHGBomP6Blz5eqom_AqgIo&_nc_ohc=1PWpggFP3akQ7kNvgEM9ftN&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AKKCFwuOD02qO1WMnhUGizS&oh=00_AYDiHLz7PQR1Jc62Y2jhoXH-JXOKDegRDGzQR0n50G0tnA&oe=67016EAD'
+              src={profile?.avatar || userImg}
               alt='avatar'
               className=' w-ful h-full object-cover rounded-full'
             />
