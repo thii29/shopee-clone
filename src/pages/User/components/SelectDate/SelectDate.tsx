@@ -13,7 +13,6 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
     month: value?.getMonth() || 1,
     year: value?.getFullYear() || 1990
   })
-
   useEffect(() => {
     if (value) {
       setDate({
@@ -35,7 +34,6 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
     setDate(newDate)
     onChange?.(new Date(newDate.year, newDate.month, newDate.date))
   }
-
   return (
     <div className='flex flex-wrap mt-2'>
       <div className='w-[20%] truncate pt-3 text-right capitalize'>Ngày sinh:</div>
@@ -46,7 +44,7 @@ export default function SelectDate({ value, onChange, errorMessage }: Props) {
             onChange={handleChange}
             name='date'
           >
-            <option value={value?.getDate() || date.date}>Ngày</option>
+            <option value={date?.date}>{date?.date ? date.date : 'Ngày'}</option>
             {range(1, 32).map((item) => (
               <option value={item} key={item}>
                 {item}

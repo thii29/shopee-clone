@@ -1,17 +1,24 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import userImg from 'src/assets/images/user.svg'
 import path from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
-import userImg from 'src/assets/images/user.svg'
-
+function isValidUrl(str: string) {
+  try {
+    new URL(str)
+    return true
+  } catch {
+    return false
+  }
+}
 export default function UserSideNav() {
-  const {profile} = useContext(AppContext)
+  const { profile } = useContext(AppContext)
   return (
     <div>
       <div className='flex items-center border-b border-b-gray-200 py-4'>
         <Link to={path.profile} className='h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-black/10'>
           <img
-            src={profile?.avatar || userImg}
+            src={isValidUrl(profile?.avatar || '') ? profile?.avatar : userImg}
             alt=''
             className='h-full w-full object-cover'
           />
