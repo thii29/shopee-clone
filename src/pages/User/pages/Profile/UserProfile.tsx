@@ -14,6 +14,7 @@ import { AppContext } from 'src/contexts/app.context'
 import { setProfileToLS } from 'src/utils/auth'
 import { getAvatarURL, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
+import config from 'src/constants/config'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -110,7 +111,13 @@ export default function Profile() {
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileFromlocal = event.target.files?.[0]
-    setFile(fileFromlocal)
+    if (fileFromlocal && (fileFromlocal.size >= config.maxSideUploadAvatar || !fileFromlocal.type.includes('image'))) {
+      toast.error('File không đúng định dạng được quy định', {
+        position: 'top-center'
+      })
+    } else {
+      setFile(fileFromlocal)
+    }
   }
 
   const handleUpload = () => {
@@ -210,6 +217,9 @@ export default function Profile() {
             className='hidden'
             ref={fileInput}
             onChange={onFileChange}
+            onClick={(event)=>{
+             ( event.target as any).value = null
+            }}
           />
           <button
             type='button'

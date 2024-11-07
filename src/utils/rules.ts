@@ -121,7 +121,7 @@ export const priceSchema = yup.object({
 
 export const userSchema = yup.object({
   name: yup.string().max(160, 'Độ dài tối đa là 160 ký tự'),
-  phone: yup.string().max(20, 'Độ dài tối đa là 20 ký tự'),
+  phone: yup.string().max(10, 'Số điện thoại có giới hạn là 10 ký tự'),
   address: yup.string().max(160, 'Độ dài tối đa là 160 ký tự'),
   avatar: yup.string().max(1000, 'Độ dài tối đa là 1000 ký tự'),
   date_of_birth: yup.date().max(new Date(), 'Hãy chọn một ngày trong quá khứ'),
