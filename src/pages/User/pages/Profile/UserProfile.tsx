@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Controller, useForm } from 'react-hook-form'
 import userAPI from 'src/api/user.api'
@@ -9,22 +9,37 @@ import Input from 'src/components/Input'
 import InputNumber from 'src/components/InputNumber'
 import { userSchema, UserSchema } from 'src/utils/rules'
 import SelectDate from '../../components/SelectDate'
-import { ref } from 'yup'
 import { toast } from 'react-toastify'
 import { AppContext } from 'src/contexts/app.context'
 import { setProfileToLS } from 'src/utils/auth'
+import { getAvatarURL, isAxiosUnprocessableEntityError } from 'src/utils/utils'
+import { ErrorResponse } from 'src/types/utils.type'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
-
+type FormDataError = Omit<FormData, 'date_of_birth'> & {
+  date_of_birth?: string
+}
 const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])
+//URL.createObjectURL(file)
+//flow 1: nhan upload: up len server luon => sv tra ve url hinh anh
+//nhan submit thi gui url anh cong voi data len sv
+
+//flow 2: nhan up load: khong up len sv
+//nhan submit thi tien hanh up len server, upload thanh cong thi goi api updateprofile
 
 export default function Profile() {
-  const {setProfile} = useContext(AppContext)
+  const fileInput = useRef<HTMLInputElement>(null)
+  const { setProfile } = useContext(AppContext)
+  const [file, setFile] = useState<File>()
+  const previewImg = useMemo(() => {
+    return file ? URL.createObjectURL(file) : ''
+  }, [file])
   const {
     register,
     control,
     formState: { errors },
     handleSubmit,
+    watch,
     setValue,
     setError
   } = useForm<FormData>({
@@ -37,6 +52,7 @@ export default function Profile() {
     },
     resolver: yupResolver(profileSchema)
   })
+  const ava = watch('avatar')
   const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
     queryFn: userAPI.getProfile
@@ -46,6 +62,10 @@ export default function Profile() {
 
   const { mutate: updateProfileMutation, mutateAsync } = useMutation({
     mutationFn: userAPI.updateProfile
+  })
+
+  const { mutate: uploadAvatarMutation, mutateAsync: uploadAvataAsync } = useMutation({
+    mutationFn: userAPI.uploadAvatar
   })
 
   useEffect(() => {
@@ -59,12 +79,43 @@ export default function Profile() {
   }, [profile])
 
   const onSubmit = handleSubmit(async (data) => {
-    const res = await mutateAsync({ ...data, date_of_birth: data.date_of_birth?.toISOString() })
-    setProfile(res.data)
-    setProfileToLS(res.data)
-    refetch()
-    toast.success(res.message)
+    try {
+      let avatarName = ava
+      if (file) {
+        const form = new FormData()
+        form.append('image', file)
+        const uploadRes = await uploadAvataAsync(form)
+        avatarName = uploadRes.data
+        setValue('avatar', avatarName)
+      }
+      const res = await mutateAsync({ ...data, date_of_birth: data.date_of_birth?.toISOString(), avatar: avatarName })
+      setProfile(res.data)
+      setProfileToLS(res.data)
+      refetch()
+      toast.success(res.message)
+    } catch (error) {
+      if (isAxiosUnprocessableEntityError<ErrorResponse<FormDataError>>(error)) {
+        const formError = error.response?.data.data
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof FormData, {
+              message: formError[key as keyof FormData],
+              type: 'Server'
+            })
+          })
+        }
+      }
+    }
   })
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileFromlocal = event.target.files?.[0]
+    setFile(fileFromlocal)
+  }
+
+  const handleUpload = () => {
+    fileInput.current?.click()
+  }
   return (
     <div className='pb-10 rounded-sm bg-white px-7 shadow md:px-7 md:pb-20'>
       <div className='border-b border-b-gray-200 py-6'>
@@ -149,16 +200,21 @@ export default function Profile() {
         {/* Info img */}
         <div className='flex flex-col items-center md:w-72 md:border-l md:border-l-gray-200'>
           <div className='my-5 h-24 w-24'>
-            <img
-              src='https://pbs.twimg.com/profile_images/1701878932176351232/AlNU3WTK_400x400.jpg'
-              alt=''
-              className='w-full rounded-full object-cover'
-            />
+            <img src={previewImg || getAvatarURL(ava)} alt='' className='w-full h-full rounded-full object-cover' />
           </div>
-          <input type='file' name='' id='' accept='.jpg, .jpeg, .png' className='hidden' />
+          <input
+            type='file'
+            name=''
+            id=''
+            accept='.jpg, .jpeg, .png'
+            className='hidden'
+            ref={fileInput}
+            onChange={onFileChange}
+          />
           <button
+            type='button'
             className='flex h-10 items-center justify-end rounded-sm border bg-white text-sm px-6 text-gray-600 shadow-sm hover:border-orange'
-            type='submit'
+            onClick={handleUpload}
           >
             Chọn ảnh
           </button>

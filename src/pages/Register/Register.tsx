@@ -38,7 +38,7 @@ export default function Register() {
     registerAccountMutation.mutate(body, {
       onSuccess: () => {
         setIsAuthenticated(true)
-        setProfile(data.data.data.user)
+        setProfile(data.data.user)
         navigate('/')
       },
       onError: (error) => {
