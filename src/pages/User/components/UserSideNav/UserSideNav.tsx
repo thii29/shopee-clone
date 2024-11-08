@@ -1,5 +1,6 @@
+import classNames from 'classnames'
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import path from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 import { getAvatarURL } from 'src/utils/utils'
@@ -35,7 +36,15 @@ export default function UserSideNav() {
       </div>
       <div className='mt-7'>
         {/* my account */}
-        <Link to={path.profile} className='flex items-center capitalize text-orange transition-colors'>
+        <NavLink
+          to={path.profile}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -51,9 +60,17 @@ export default function UserSideNav() {
             />
           </svg>
           Tài khoản của tôi
-        </Link>
+        </NavLink>
         {/* change password */}
-        <Link to={path.changePassword} className='flex items-center capitalize text-gray transition-colors my-2'>
+        <NavLink
+          to={path.changePassword}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize my-2 transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -69,9 +86,17 @@ export default function UserSideNav() {
             />
           </svg>
           Đổi mật khẩu
-        </Link>
+        </NavLink>
         {/*history buy*/}
-        <Link to={path.profile} className='flex items-center capitalize text-gray transition-colors my-2'>
+        <NavLink
+          to={path.historyBuy}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize my-2 transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -87,7 +112,7 @@ export default function UserSideNav() {
             />
           </svg>
           Lịch sử mua hàng
-        </Link>
+        </NavLink>
       </div>
     </div>
   )

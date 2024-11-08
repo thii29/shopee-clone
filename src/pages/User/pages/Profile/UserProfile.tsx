@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useContext, useEffect, useMemo, useState } from 'react'
 
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, FormProvider, useFormContext } from 'react-hook-form'
 import userAPI from 'src/api/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
@@ -14,7 +14,51 @@ import { AppContext } from 'src/contexts/app.context'
 import { setProfileToLS } from 'src/utils/auth'
 import { getAvatarURL, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
-import config from 'src/constants/config'
+import InputFile from 'src/components/InputFile'
+import { error } from 'console'
+
+function Info() {
+  const {
+    register,
+    control,
+    formState: { errors }
+  } = useFormContext<FormData>()
+  return (
+    <Fragment>
+      <div className='flex flex-wrap mt-6'>
+        <div className='w-[20%] truncate pt-3 text-right capitalize'>Tên: </div>
+        <div className='w-[80%] pl-5'>
+          <Input
+            className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+            register={register}
+            name='name'
+            placeholder='Tên'
+            errorMessage={errors.name?.message}
+          />
+        </div>
+      </div>
+      {/* Phone */}
+      <div className='flex flex-wrap mt-2'>
+        <div className='w-[20%] truncate pt-3 text-right capitalize'>Số điện thoại: </div>
+        <div className='w-[80%] pl-5'>
+          <Controller
+            control={control}
+            name='phone'
+            render={({ field }) => (
+              <InputNumber
+                className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+                placeholder='Số điện thoại'
+                errorMessage={errors.phone?.message}
+                {...field}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </div>
+      </div>
+    </Fragment>
+  )
+}
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -29,21 +73,13 @@ const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birt
 //nhan submit thi tien hanh up len server, upload thanh cong thi goi api updateprofile
 
 export default function Profile() {
-  const fileInput = useRef<HTMLInputElement>(null)
   const { setProfile } = useContext(AppContext)
   const [file, setFile] = useState<File>()
   const previewImg = useMemo(() => {
     return file ? URL.createObjectURL(file) : ''
   }, [file])
-  const {
-    register,
-    control,
-    formState: { errors },
-    handleSubmit,
-    watch,
-    setValue,
-    setError
-  } = useForm<FormData>({
+
+  const methods = useForm<FormData>({
     defaultValues: {
       name: '',
       phone: '',
@@ -53,6 +89,17 @@ export default function Profile() {
     },
     resolver: yupResolver(profileSchema)
   })
+
+  const {
+    register,
+    control,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    watch,
+    setError
+  } = methods
+
   const ava = watch('avatar')
   const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
@@ -108,20 +155,8 @@ export default function Profile() {
       }
     }
   })
-
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromlocal = event.target.files?.[0]
-    if (fileFromlocal && (fileFromlocal.size >= config.maxSideUploadAvatar || !fileFromlocal.type.includes('image'))) {
-      toast.error('File không đúng định dạng được quy định', {
-        position: 'top-center'
-      })
-    } else {
-      setFile(fileFromlocal)
-    }
-  }
-
-  const handleUpload = () => {
-    fileInput.current?.click()
+  const handleChangeFile = (file?: File) => {
+    setFile(file)
   }
   return (
     <div className='pb-10 rounded-sm bg-white px-7 shadow md:px-7 md:pb-20'>
@@ -129,111 +164,70 @@ export default function Profile() {
         <h1 className='text-lg font-medium capitalize text-gray-900'>Hồ sơ của tôi</h1>
         <div className='mt-1 text-sm text-gray-700'>Quản lý thông tin hồ sơ để bảo mật tài khoản</div>
       </div>
-      <form className='mt-8 flex flex-col-reverse md:flex-row md:items-start' onSubmit={onSubmit}>
-        {/* Info form */}
-        <div className='mt-6 flex-grow md:pr-12 md:mt-0 '>
-          {/* Email */}
-          <div className='flex flex-wrap'>
-            <div className='w-[20%] truncate pt-3 text-right capitalize'>Email: </div>
-            <div className='w-[80%] pl-5'>
-              <div className='pt-3 text-gray-7000'>{profile?.email}</div>
+      <FormProvider {...methods}>
+        <form className='mt-8 flex flex-col-reverse md:flex-row md:items-start' onSubmit={onSubmit}>
+          {/* Info form */}
+          <div className='mt-6 flex-grow md:pr-12 md:mt-0 '>
+            {/* Email */}
+            <div className='flex flex-wrap'>
+              <div className='w-[20%] truncate pt-3 text-right capitalize'>Email: </div>
+              <div className='w-[80%] pl-5'>
+                <div className='pt-3 text-gray-7000'>{profile?.email}</div>
+              </div>
+            </div>
+            {/* Info component */}
+            <Info />
+            {/* Address */}
+            <div className='flex flex-wrap mt-2'>
+              <div className='w-[20%] truncate pt-3 text-right capitalize'>Địa chỉ: </div>
+              <div className='w-[80%] pl-5'>
+                <Input
+                  className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+                  register={register}
+                  name='address'
+                  placeholder='Địa chỉ'
+                  errorMessage={errors.address?.message}
+                />
+              </div>
+            </div>
+            {/* Birthday */}
+            <Controller
+              control={control}
+              name='date_of_birth'
+              render={({ field }) => (
+                <SelectDate
+                  errorMessage={errors.date_of_birth?.message}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
+              )}
+            />
+            <div className='flex flex-wrap mt-4'>
+              <div className='truncate pt-3 capitalize sm:w-[20%] sm:text-right' />
+              <div className='sm:w-[80%] sm:pl-5'>
+                <Button
+                  className='flex h-9 items-center bg-orange px-5 text-center text-sm text-white hover:bg-orange/80'
+                  type='submit'
+                >
+                  Lưu
+                </Button>
+              </div>
             </div>
           </div>
-          {/* Name */}
-          <div className='flex flex-wrap mt-6'>
-            <div className='w-[20%] truncate pt-3 text-right capitalize'>Tên: </div>
-            <div className='w-[80%] pl-5'>
-              <Input
-                className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
-                register={register}
-                name='name'
-                placeholder='Tên'
-                errorMessage={errors.name?.message}
-              />
+          {/* Info img */}
+          <div className='flex flex-col items-center md:w-72 md:border-l md:border-l-gray-200'>
+            <div className='my-5 h-24 w-24'>
+              <img src={previewImg || getAvatarURL(ava)} alt='' className='w-full h-full rounded-full object-cover' />
+            </div>
+            {/* Input file */}
+            <InputFile onChange={handleChangeFile} />
+            <div className='mt-3 text-gray-400'>
+              <div>Dung lượng tối đa 1MB</div>
+              <div>Định dạng: JPG, JPEG, PNG</div>
             </div>
           </div>
-          {/* Phone */}
-          <div className='flex flex-wrap mt-2'>
-            <div className='w-[20%] truncate pt-3 text-right capitalize'>Số điện thoại: </div>
-            <div className='w-[80%] pl-5'>
-              <Controller
-                control={control}
-                name='phone'
-                render={({ field }) => (
-                  <InputNumber
-                    className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
-                    placeholder='Số điện thoại'
-                    errorMessage={errors.phone?.message}
-                    {...field}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          {/* Address */}
-          <div className='flex flex-wrap mt-2'>
-            <div className='w-[20%] truncate pt-3 text-right capitalize'>Địa chỉ: </div>
-            <div className='w-[80%] pl-5'>
-              <Input
-                className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
-                register={register}
-                name='address'
-                placeholder='Địa chỉ'
-                errorMessage={errors.address?.message}
-              />
-            </div>
-          </div>
-          {/* Birthday */}
-          <Controller
-            control={control}
-            name='date_of_birth'
-            render={({ field }) => (
-              <SelectDate errorMessage={errors.date_of_birth?.message} onChange={field.onChange} value={field.value} />
-            )}
-          />
-          <div className='flex flex-wrap mt-4'>
-            <div className='truncate pt-3 capitalize sm:w-[20%] sm:text-right' />
-            <div className='sm:w-[80%] sm:pl-5'>
-              <Button
-                className='flex h-9 items-center bg-orange px-5 text-center text-sm text-white hover:bg-orange/80'
-                type='submit'
-              >
-                Lưu
-              </Button>
-            </div>
-          </div>
-        </div>
-        {/* Info img */}
-        <div className='flex flex-col items-center md:w-72 md:border-l md:border-l-gray-200'>
-          <div className='my-5 h-24 w-24'>
-            <img src={previewImg || getAvatarURL(ava)} alt='' className='w-full h-full rounded-full object-cover' />
-          </div>
-          <input
-            type='file'
-            name=''
-            id=''
-            accept='.jpg, .jpeg, .png'
-            className='hidden'
-            ref={fileInput}
-            onChange={onFileChange}
-            onClick={(event)=>{
-             ( event.target as any).value = null
-            }}
-          />
-          <button
-            type='button'
-            className='flex h-10 items-center justify-end rounded-sm border bg-white text-sm px-6 text-gray-600 shadow-sm hover:border-orange'
-            onClick={handleUpload}
-          >
-            Chọn ảnh
-          </button>
-          <div className='mt-3 text-gray-400'>
-            <div>Dung lượng tối đa 1MB</div>
-            <div>Định dạng: JPG, JPEG, PNG</div>
-          </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   )
 }
