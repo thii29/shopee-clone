@@ -1,5 +1,6 @@
 import { UseFormGetValues } from 'react-hook-form'
 import * as yup from 'yup'
+import { ERROR_VALIDATE } from './constants'
 
 //type Rules = { [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions | undefined }
 
@@ -16,11 +17,11 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
     },
     maxLength: {
       value: 160,
-      message: 'Length of email from 5 - 160 characters'
+      message: ERROR_VALIDATE.CHAR_MAX_8
     },
     minLength: {
-      value: 5,
-      message: 'Length of email from 5 - 160 characters'
+      value: 6,
+      message:ERROR_VALIDATE.CHAR_MIN_6
     }
   },
   password: {
@@ -29,12 +30,12 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
       message: 'This field is required'
     },
     maxLength: {
-      value: 160,
-      message: 'Length of password from 6 - 160 characters'
+      value: 8,
+      message: ERROR_VALIDATE.CHAR_MAX_8
     },
     minLength: {
       value: 6,
-      message: 'Length of password from 6 - 160 characters'
+      message: ERROR_VALIDATE.CHAR_MIN_6
     }
   },
   confirm_password: {
@@ -44,11 +45,11 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
     },
     maxLength: {
       value: 160,
-      message: 'Length of password from 6 - 160 characters'
+      message: ERROR_VALIDATE.CHAR_MAX_8
     },
     minLength: {
       value: 6,
-      message: 'Length of password from 6 - 160 characters'
+      message: ERROR_VALIDATE.CHAR_MIN_6
     },
     validate:
       typeof getValues === 'function'
@@ -67,13 +68,13 @@ export const schema = yup.object({
   password: yup
     .string()
     .required('This field is required')
-    .min(6, 'Length of password from 6 - 160 characters')
-    .max(6, 'Length of password from 6 - 160 characters'),
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
   confirm_password: yup
     .string()
     .required('This field is required')
-    .min(6, 'Length of password from 6 - 160 characters')
-    .max(6, 'Length of password from 6 - 160 characters')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
     .oneOf([yup.ref('password')], 'Confirm password does not match'),
   name: yup.string().trim().required()
 })
@@ -88,8 +89,8 @@ export const loginSchema = yup.object({
   password: yup
     .string()
     .required('This field is required')
-    .min(6, 'Length of password from 6 - 160 characters')
-    .max(6, 'Length of password from 6 - 160 characters')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(6, ERROR_VALIDATE.CHAR_MAX_8)
 })
 
 export const priceSchema = yup.object({
@@ -125,9 +126,22 @@ export const userSchema = yup.object({
   address: yup.string().max(160, 'Độ dài tối đa là 160 ký tự'),
   avatar: yup.string().max(1000, 'Độ dài tối đa là 1000 ký tự'),
   date_of_birth: yup.date().max(new Date(), 'Hãy chọn một ngày trong quá khứ'),
-  password: schema.fields['password'],
-  new_password: schema.fields['password'],
-  confirm_password: schema.fields['confirm_password'],
+  password: yup
+    .string()
+    .required('This field is required')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+  new_password: yup
+    .string()
+    .required('This field is required')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+  confirm_password: yup
+    .string()
+    .required('This field is required')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
+    .oneOf([yup.ref('new_password')], 'Confirm password does not match')
 })
 
 export type UserSchema = yup.InferType<typeof userSchema>

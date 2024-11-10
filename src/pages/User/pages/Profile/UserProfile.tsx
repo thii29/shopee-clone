@@ -15,7 +15,6 @@ import { setProfileToLS } from 'src/utils/auth'
 import { getAvatarURL, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
 import InputFile from 'src/components/InputFile'
-import { error } from 'console'
 
 function Info() {
   const {
@@ -29,7 +28,8 @@ function Info() {
         <div className='w-[20%] truncate pt-3 text-right capitalize'>Tên: </div>
         <div className='w-[80%] pl-5'>
           <Input
-            className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+            classNameInput='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+            classNameEye='hidden'
             register={register}
             name='name'
             placeholder='Tên'
@@ -108,11 +108,11 @@ export default function Profile() {
   const profile = profileData?.data
   //console.log(profile)
 
-  const { mutate: updateProfileMutation, mutateAsync } = useMutation({
+  const {  mutateAsync } = useMutation({
     mutationFn: userAPI.updateProfile
   })
 
-  const { mutate: uploadAvatarMutation, mutateAsync: uploadAvataAsync } = useMutation({
+  const { mutateAsync: uploadAvataAsync } = useMutation({
     mutationFn: userAPI.uploadAvatar
   })
 
@@ -182,7 +182,8 @@ export default function Profile() {
               <div className='w-[20%] truncate pt-3 text-right capitalize'>Địa chỉ: </div>
               <div className='w-[80%] pl-5'>
                 <Input
-                  className='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+                  classNameInput='w-full rounded-sm border border-gray-300 px-2 py-2 outline-none focus:border-gray-500 focus:shadow-sm hover:border-orange'
+                  classNameEye='hidden'
                   register={register}
                   name='address'
                   placeholder='Địa chỉ'

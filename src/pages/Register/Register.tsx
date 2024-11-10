@@ -76,12 +76,13 @@ export default function Register() {
         <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
-              <div className='text-2xl'>Đăng ký</div>
+              <div className='text-2xl mb-4'>Đăng ký</div>
               <Input
                 name='email'
                 register={register}
                 type='email'
-                className='mt-8 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                classNameInput='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                classNameEye='hidden'
                 errorMessage={errors.email?.message}
                 placeholder='Email'
                 //rules={rules.email}
@@ -101,7 +102,7 @@ export default function Register() {
                 name='password'
                 register={register}
                 type='password'
-                className='mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                classNameInput='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.password?.message}
                 placeholder='Password'
                 //rules={rules.password}
@@ -111,7 +112,7 @@ export default function Register() {
                 name='confirm_password'
                 register={register}
                 type='password'
-                className='mt-2 p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
+                classNameInput='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Confirm Password'
                 //rules={rules.confirm_password}
