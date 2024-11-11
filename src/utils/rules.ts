@@ -79,6 +79,26 @@ export const schema = yup.object({
   name: yup.string().trim().required()
 })
 
+export const registerSchema = yup.object({
+  email: yup
+    .string()
+    .required('This field is required')
+    .email('Incorrect email format')
+    .min(5, 'Length of email from 5 - 160 characters')
+    .max(160, 'Length of email from 5 - 160 characters'),
+  password: yup
+    .string()
+    .required('This field is required')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+  confirm_password: yup
+    .string()
+    .required('This field is required')
+    .min(6, ERROR_VALIDATE.CHAR_MIN_6)
+    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
+    .oneOf([yup.ref('password')], 'Confirm password does not match'),
+})
+
 export const loginSchema = yup.object({
   email: yup
     .string()
@@ -148,4 +168,5 @@ export type UserSchema = yup.InferType<typeof userSchema>
 
 export type Schema = yup.InferType<typeof schema>
 export type LoginSchema = yup.InferType<typeof loginSchema>
+export type RegisterSchema = yup.InferType<typeof registerSchema>
 export type priceSchema = yup.InferType<typeof priceSchema>

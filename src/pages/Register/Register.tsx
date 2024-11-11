@@ -1,11 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
-import { schema, Schema } from 'src/utils/rules'
+import { registerSchema, RegisterSchema} from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/api/auth.api'
-import { omit } from 'lodash'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
 import { useContext } from 'react'
@@ -15,7 +14,7 @@ import path from 'src/constants/path'
 import { toast } from 'react-toastify'
 
 
-type FormData = Schema
+type FormData = RegisterSchema
 
 export default function Register() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -26,15 +25,15 @@ export default function Register() {
     setError,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(registerSchema)
   })
+  console.log('', )
   const {mutate: registerAccountMutation, isPending, isPaused} = useMutation({
-    mutationFn: (body: Omit<FormData, 'name'>) => authApi.registerAccount(body)
+    mutationFn: (body: FormData) => authApi.registerAccount(body)
   })
   const onSubmit = handleSubmit((data) => {
-    const body = omit(data, ['name'])
-    console.log('body', body)
-    console.log('data', data)
+    const body = data
+    
     registerAccountMutation(body, {
       onSuccess: (res) => {
         console.log('res', res)
@@ -45,12 +44,12 @@ export default function Register() {
       },
       onError: (error) => {
         toast.error(error.message)
-        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
-              setError(key as keyof Omit<FormData, 'confirm_password'>, {
-                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
                 type: 'Server'
               })
             })
