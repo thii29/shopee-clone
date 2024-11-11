@@ -1,4 +1,3 @@
-import { open } from 'node:inspector/promises'
 import { InputHTMLAttributes, useState } from 'react'
 import type { RegisterOptions, UseFormRegister } from 'react-hook-form'
 
@@ -6,7 +5,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string
   classNameInput?: string
   classNameError?: string
-  classNameEye ?: string
+  classNameEye?: string
   //name: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register?: UseFormRegister<any>
@@ -26,12 +25,11 @@ export default function Input({
 }: Props) {
   const [openEye, setOpenEye] = useState(false)
   const registerResult = register && name ? register(name, rules) : {}
-  const toggleEye = ()=>{
-    
-    setOpenEye((prev)=> !prev)
+  const toggleEye = () => {
+    setOpenEye((prev) => !prev)
   }
-  const handleToggle = ()=> {
-    if(rest.type === 'password'){
+  const handleToggle = () => {
+    if (rest.type === 'password') {
       return openEye ? 'text' : 'password'
     }
     return rest.type
@@ -39,7 +37,7 @@ export default function Input({
   return (
     <div>
       <div className='relative'>
-        <input {...registerResult} className={classNameInput} {...rest}  type={handleToggle()}/>
+        <input {...registerResult} className={classNameInput} {...rest} type={handleToggle()} />
         {openEye ? (
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -47,7 +45,7 @@ export default function Input({
             viewBox='0 0 24 24'
             strokeWidth={1.5}
             stroke='currentColor'
-            className= {classNameEye}
+            className={classNameEye}
             onClick={toggleEye}
           >
             <path
@@ -66,7 +64,6 @@ export default function Input({
             stroke='currentColor'
             className={classNameEye}
             onClick={toggleEye}
-
           >
             <path
               strokeLinecap='round'

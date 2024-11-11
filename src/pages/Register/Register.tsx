@@ -11,12 +11,10 @@ import { ErrorResponse } from 'src/types/utils.type'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
+import path from 'src/constants/path'
+import { toast } from 'react-toastify'
 
-// interface FormData {
-//   email: string
-//   password: string
-//   confirm_password: string
-// }
+
 type FormData = Schema
 
 export default function Register() {
@@ -30,18 +28,23 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
-  const registerAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
+  const {mutate: registerAccountMutation, isPending, isPaused} = useMutation({
+    mutationFn: (body: Omit<FormData, 'name'>) => authApi.registerAccount(body)
   })
   const onSubmit = handleSubmit((data) => {
-    const body = omit(data, ['confirm_password'])
-    registerAccountMutation.mutate(body, {
-      onSuccess: () => {
+    const body = omit(data, ['name'])
+    console.log('body', body)
+    console.log('data', data)
+    registerAccountMutation(body, {
+      onSuccess: (res) => {
+        console.log('res', res)
         setIsAuthenticated(true)
-        setProfile(data.data.user)
-        navigate('/')
+        setProfile(res.data.data.user)
+        toast.success(res.data.message)
+        navigate(path.login)
       },
       onError: (error) => {
+        toast.error(error.message)
         if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
@@ -68,8 +71,6 @@ export default function Register() {
       }
     })
   })
-  // const formValues = watch()
-  console.log(errors)
   return (
     <div className='bg-orange'>
       <div className='container'>
@@ -121,8 +122,8 @@ export default function Register() {
               <div className='mt-2'>
                 <Button
                   type='submit'
-                  isLoading={registerAccountMutation.isPending}
-                  disabled={registerAccountMutation.isPaused}
+                  isLoading={isPending}
+                  disabled={isPaused}
                   className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex justify-center items-center'
                 >
                   Sign up

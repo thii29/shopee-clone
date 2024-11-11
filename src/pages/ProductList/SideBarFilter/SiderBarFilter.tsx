@@ -14,12 +14,12 @@ import InputV2 from 'src/components/InputV2'
 
 interface Props {
   queryConfig: QueryConfig
-  categories: Category[]
+  categories: Category[] 
 }
 
 type FormData = {
-  price_min: string
-  price_max: string
+  price_min?: string
+  price_max?: string
 }
 
 export default function SiderBarFilter({ queryConfig, categories }: Props) {
@@ -48,8 +48,8 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
       pathname: path.home,
       search: createSearchParams({
         ...queryConfig,
-        price_max: data.price_max,
-        price_min: data.price_min
+        price_max : data?.price_max || "",
+        price_min : data?.price_min || ""
       }).toString()
     })
   })

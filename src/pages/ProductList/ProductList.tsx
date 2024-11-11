@@ -41,6 +41,7 @@ export default function Produclist() {
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
             <div className='col-span-2'>
+              {/* categories sai type tra ve . da sua ben api */}
               <SiderBarFilter queryConfig={queryConfig} categories={categoriesData?.data || []}/>
             </div>
             <div className='col-span-9'>
