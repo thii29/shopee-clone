@@ -5,7 +5,7 @@ import { AuthResponse } from 'src/types/auth.type'
 import { clearLS, getAccessTokenFromLS, setAccessTokenLS, setProfileToLS } from './auth'
 import path from 'src/constants/path'
 import config from 'src/constants/config'
-class Htttp {
+class Http {
   instance: AxiosInstance
   private accessToken: string
   constructor() {
@@ -62,6 +62,6 @@ class Htttp {
   }
 }
 
-const https = new Htttp().instance
+const https = new Http().instance
 
 export default https

@@ -66,18 +66,18 @@ export default function NavHeader() {
       </Popover>
       {isAuthenticated && (
         <Popover
-          className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4'
+          className='flex items-center py-2 hover:text-gray-300 cursor-pointer ml-4 w-full md:w-auto'
           renderPopover={
-            <div className='bg-white shadow-md rounded-sm border border-gray-200'>
-              <Link to={path.profile} className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+            <div className='bg-white shadow-md rounded-sm border border-gray-200 '>
+              <Link to={path.profile} className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500 text-left'>
                 My account
               </Link>
-              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'>
+              <Link to='/' className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500 text-left'>
                 My purchase
               </Link>
               <button
                 onClick={handleLogout}
-                className='block py-2 px-5 hover:bg-slate-100 bg-white hover:text-cyan-500'
+                className='block py-2 px-5 hover:bg-slate-100 w-full bg-white hover:text-cyan-500 text-left'
               >
                 Logout
               </button>

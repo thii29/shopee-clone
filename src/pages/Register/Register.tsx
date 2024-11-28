@@ -10,7 +10,6 @@ import { ErrorResponse } from 'src/types/utils.type'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
-import path from 'src/constants/path'
 import { toast } from 'react-toastify'
 
 
@@ -27,20 +26,18 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema)
   })
-  console.log('', )
   const {mutate: registerAccountMutation, isPending, isPaused} = useMutation({
     mutationFn: (body: FormData) => authApi.registerAccount(body)
   })
   const onSubmit = handleSubmit((data) => {
     const body = data
-    
     registerAccountMutation(body, {
       onSuccess: (res) => {
         console.log('res', res)
         setIsAuthenticated(true)
-        setProfile(res.data.data.user)
+        setProfile(res?.data?.user)
         toast.success(res.data.message)
-        navigate(path.login)
+        navigate("/")
       },
       onError: (error) => {
         toast.error(error.message)
