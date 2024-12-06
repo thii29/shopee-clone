@@ -28,7 +28,7 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
   const {
     control,
     handleSubmit,
-    watch,
+
     trigger,
     formState: { errors }
   } = useForm<FormData>({
@@ -40,9 +40,7 @@ export default function SiderBarFilter({ queryConfig, categories }: Props) {
     shouldFocusError: false
   })
   const navigate = useNavigate()
-  const valueForm = watch()
-  console.log(valueForm)
-  console.log(errors)
+  
   const onSubmit = handleSubmit((data) => {
     navigate({
       pathname: path.home,

@@ -85,7 +85,6 @@ export default function ProductDetail() {
       return
     }
     requestAddToCart(
-      //err-
       { buy_count: buyCount, product_id: product?._id as string },
       {
         onSuccess: (data) => {

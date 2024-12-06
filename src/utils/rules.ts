@@ -17,7 +17,7 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
     },
     maxLength: {
       value: 160,
-      message: ERROR_VALIDATE.CHAR_MAX_8
+      message: ERROR_VALIDATE.CHAR_MAX_10
     },
     minLength: {
       value: 6,
@@ -30,8 +30,8 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
       message: 'This field is required'
     },
     maxLength: {
-      value: 8,
-      message: ERROR_VALIDATE.CHAR_MAX_8
+      value: 10,
+      message: ERROR_VALIDATE.CHAR_MAX_10
     },
     minLength: {
       value: 6,
@@ -44,8 +44,8 @@ export const getRules = (getValues?: UseFormGetValues<any>) /*: Rules*/ => ({
       message: 'This field is required'
     },
     maxLength: {
-      value: 160,
-      message: ERROR_VALIDATE.CHAR_MAX_8
+      value: 10,
+      message: ERROR_VALIDATE.CHAR_MAX_10
     },
     minLength: {
       value: 6,
@@ -69,12 +69,12 @@ export const schema = yup.object({
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10),
   confirm_password: yup
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10)
     .oneOf([yup.ref('password')], 'Confirm password does not match'),
   name: yup.string().trim().required()
 })
@@ -90,12 +90,12 @@ export const registerSchema = yup.object({
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10),
   confirm_password: yup
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10)
     .oneOf([yup.ref('password')], 'Confirm password does not match'),
 })
 
@@ -110,7 +110,7 @@ export const loginSchema = yup.object({
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(6, ERROR_VALIDATE.CHAR_MAX_8)
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10)
 })
 
 export const priceSchema = yup.object({
@@ -150,17 +150,17 @@ export const userSchema = yup.object({
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10),
   new_password: yup
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8),
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10),
   confirm_password: yup
     .string()
     .required('This field is required')
     .min(6, ERROR_VALIDATE.CHAR_MIN_6)
-    .max(8, ERROR_VALIDATE.CHAR_MAX_8)
+    .max(10, ERROR_VALIDATE.CHAR_MAX_10)
     .oneOf([yup.ref('new_password')], 'Confirm password does not match')
 })
 
