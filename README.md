@@ -3,16 +3,20 @@ Authentication module quản lý bằng JWT (JSON Web Token)
 - Đăng nhập
 - Đăng ký
 - Đăng xuất
+  
 Trang sản phẩm
 - Phân trang
 - Sắp xếp và lọc theo thuộc tính sản phẩm
 - Tìm kiếm sản phẩm
+  
 Chi tiết sản phẩm
 - Hiển thị thông tin chi tiết sản phẩm
 - Chức năng thêm vào giỏ hàng
+  
 Giỏ hàng
 - Quản lý đơn hàng: thêm, xóa sản phẩm
 - Mua hàng
+  
 Profile khách hàng
 - Update thông tin cá nhân, avatar
 - Đổi mật khẩu
